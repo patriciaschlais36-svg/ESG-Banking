@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ESG 智汇银行版 — 中国银行业ESG综合监测平台</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --navy:        #060f1e;
+  --navy-mid:    #0c1c38;
+  --navy-light:  #122a52;
+  --corp-blue:   #1a3370;
+  --accent-blue: #3b82f6;
+  --accent2:     #06b6d4;
+  --green:       #16a34a;
+  --green-mid:   #86efac;
+  --red:         #dc2626;
+  --red-mid:     #fca5a5;
+  --gold:        #d4a847;
+  --gold-light:  #fde68a;
+  --purple:      #7c3aed;
+  --purple-mid:  #c4b5fd;
+  --text-primary:   #eef2ff;
+  --text-secondary: #94a3b8;
+  --text-muted:     #3d5a80;
+  --border:      rgba(59,130,246,0.15);
+  --border2:     rgba(6,182,212,0.12);
+  --glass:       rgba(12,28,56,0.75);
+  --glass-hover: rgba(18,42,82,0.88);
+  --card-bg:     rgba(6,15,30,0.9);
+  --radius:      12px;
+  --radius-lg:   18px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--navy);
+  color:var(--text-primary);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,0.035) 1px,transparent 1px);
+  background-size:56px 56px;
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 55% 45% at 15% 0%,rgba(26,51,112,0.45) 0%,transparent 65%),
+    radial-gradient(ellipse 35% 35% at 85% 95%,rgba(22,163,74,0.1) 0%,transparent 55%),
+    radial-gradient(ellipse 30% 40% at 90% 10%,rgba(6,182,212,0.08) 0%,transparent 50%);
+  pointer-events:none;z-index:0;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--navy-light);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-blue);}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  background:rgba(6,15,30,0.96);
+  border-bottom:1px solid rgba(59,130,246,0.1);
+  padding:0 40px;
+  height:34px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;color:var(--text-muted);
+  position:sticky;top:0;z-index:200;
+}
+.topbar-left{display:flex;gap:20px;align-items:center;}
+.topbar-right{display:flex;gap:16px;align-items:center;}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 6px var(--green);
+  animation:blink 2s ease-in-out infinite;
+  display:inline-block;margin-right:5px;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
+.topbar-rate{color:var(--text-secondary);font-family:'DM Mono',monospace;font-size:11px;}
+.topbar-rate span{color:var(--gold);}
+
+/* ===== NAV ===== */
+nav{
+  position:sticky;top:34px;z-index:150;
+  background:rgba(6,15,30,0.94);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:62px;
+}
+.nav-logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--corp-blue),var(--accent-blue));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;
+  box-shadow:0 0 20px rgba(59,130,246,0.4);
+}
+.logo-text{font-size:19px;font-weight:700;letter-spacing:1px;}
+.logo-text span{color:var(--accent-blue);}
+.logo-sub{font-size:10px;color:var(--text-muted);margin-top:1px;letter-spacing:.5px;}
+.nav-links{display:flex;gap:2px;list-style:none;}
+.nav-links a{
+  display:block;padding:6px 13px;border-radius:8px;
+  color:var(--text-secondary);text-decoration:none;
+  font-size:13.5px;font-weight:500;transition:all .2s;
+}
+.nav-links a:hover{color:var(--text-primary);background:rgba(59,130,246,0.1);}
+.nav-links a.active{color:var(--accent-blue);background:rgba(59,130,246,0.12);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-badge{
+  background:linear-gradient(135deg,var(--green),#15803d);
+  color:#fff;font-size:11px;font-weight:600;
+  padding:4px 11px;border-radius:20px;letter-spacing:.5px;
+}
+.nav-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);}
+
+/* ===== MAIN ===== */
+main{
+  position:relative;z-index:1;
+  max-width:1440px;margin:0 auto;
+  padding:32px 40px 80px;
+}
+
+/* ===== TABS ===== */
+.page-tabs{
+  display:flex;gap:4px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:32px;
+}
+.tab-btn{
+  background:transparent;border:none;
+  color:var(--text-muted);
+  font-family:'Noto Sans SC',sans-serif;
+  font-size:14px;font-weight:500;
+  padding:10px 20px;cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all .2s;
+}
+.tab-btn:hover{color:var(--text-secondary);}
+.tab-btn.active{
+  color:var(--accent-blue);
+  border-bottom-color:var(--accent-blue);
+}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* ===== HERO ===== */
+.hero{
+  display:grid;grid-template-columns:1fr 420px;gap:32px;
+  margin-bottom:36px;
+  animation:fadeUp .6s ease both;
+}
+.hero-left{}
+.hero-label{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:2.5px;
+  color:var(--accent2);text-transform:uppercase;
+  margin-bottom:10px;
+}
+.hero h1{
+  font-size:34px;font-weight:700;
+  line-height:1.25;letter-spacing:1.5px;
+  margin-bottom:14px;
+}
+.hero h1 em{font-style:normal;color:var(--green-mid);}
+.hero-sub{
+  color:var(--text-secondary);
+  font-size:14px;line-height:1.9;font-weight:300;
+  margin-bottom:20px;
+}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.hero-tag{
+  background:rgba(59,130,246,0.08);
+  border:1px solid rgba(59,130,246,0.2);
+  border-radius:20px;color:var(--accent-blue);
+  font-size:12px;padding:4px 12px;
+}
+.hero-right{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:20px;
+  backdrop-filter:blur(12px);
+}
+.hero-right-title{
+  font-size:11px;letter-spacing:1px;
+  color:var(--text-muted);text-transform:uppercase;
+  margin-bottom:14px;
+  font-family:'DM Mono',monospace;
+}
+.policy-feed{display:flex;flex-direction:column;gap:10px;}
+.policy-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px;border-radius:8px;
+  background:rgba(59,130,246,0.05);
+  border:1px solid rgba(59,130,246,0.1);
+  transition:background .2s;cursor:default;
+}
+.policy-item:hover{background:rgba(59,130,246,0.1);}
+.policy-dot{
+  width:8px;height:8px;border-radius:50%;
+  margin-top:4px;flex-shrink:0;
+}
+.policy-dot.green{background:var(--green);}
+.policy-dot.blue{background:var(--accent-blue);}
+.policy-dot.gold{background:var(--gold);}
+.policy-dot.red{background:var(--red);}
+.policy-text{font-size:12.5px;line-height:1.6;color:var(--text-secondary);}
+.policy-text strong{color:var(--text-primary);font-weight:600;}
+.policy-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:2px;}
+
+/* ===== STATS ===== */
+.stats-row{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:14px;margin-bottom:32px;
+  animation:fadeUp .6s .1s ease both;
+}
+.stat-card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 20px;
+  backdrop-filter:blur(12px);
+  position:relative;overflow:hidden;transition:all .25s;
+}
+.stat-card:hover{
+  background:var(--glass-hover);
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+}
+.stat-card.blue::before  {background:linear-gradient(90deg,var(--accent-blue),transparent);}
+.stat-card.cyan::before  {background:linear-gradient(90deg,var(--accent2),transparent);}
+.stat-card.green::before {background:linear-gradient(90deg,var(--green),transparent);}
+.stat-card.gold::before  {background:linear-gradient(90deg,var(--gold),transparent);}
+.stat-card.red::before   {background:linear-gradient(90deg,var(--red),transparent);}
+.stat-icon{font-size:20px;margin-bottom:8px;}
+.stat-label{font-size:11px;color:var(--text-muted);margin-bottom:6px;letter-spacing:.3px;}
+.stat-value{font-size:26px;font-weight:700;line-height:1;margin-bottom:5px;font-family:'DM Mono',monospace;}
+.stat-delta{font-size:11.5px;}
+.delta-up{color:var(--green-mid);}
+.delta-down{color:var(--red-mid);}
+.delta-flat{color:var(--text-muted);}
+
+/* ===== SECTION HEADER ===== */
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px;
+}
+.section-left{display:flex;align-items:baseline;gap:12px;}
+.section-title{font-size:19px;font-weight:700;letter-spacing:.8px;}
+.section-tag{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:1.5px;
+  color:var(--text-muted);text-transform:uppercase;
+}
+
+/* ===== CARD ===== */
+.card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--radius-lg);backdrop-filter:blur(12px);
+  overflow:hidden;
+}
+.card-header{
+  padding:16px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-title{font-weight:600;font-size:14.5px;}
+.card-meta{font-size:11px;color:var(--text-muted);}
+.card-body{padding:22px;}
+
+/* ===== BUTTONS ===== */
+.btn-primary{
+  background:linear-gradient(135deg,var(--corp-blue),var(--accent-blue));
+  color:#fff;border:none;border-radius:9px;
+  padding:11px 24px;
+  font-family:'Noto Sans SC',sans-serif;
+  font-size:13.5px;font-weight:600;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+  box-shadow:0 4px 18px rgba(59,130,246,0.3);
+  letter-spacing:.5px;
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 26px rgba(59,130,246,0.45);}
+.btn-primary:active{transform:translateY(0);}
+.btn-outline{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text-secondary);
+  border-radius:8px;padding:8px 16px;
+  font-family:'Noto Sans SC',sans-serif;
+  font-size:13px;cursor:pointer;transition:all .2s;
+}
+.btn-outline:hover{border-color:var(--accent-blue);color:var(--accent-blue);}
+
+/* ===== SEARCH ===== */
+.search-bar{display:flex;gap:10px;margin-bottom:18px;}
+.search-input-wrap{flex:1;position:relative;}
+.search-input-wrap::before{
+  content:'⌕';position:absolute;left:15px;top:50%;transform:translateY(-50%);
+  color:var(--text-muted);font-size:19px;pointer-events:none;
+}
+input[type="text"]{
+  width:100%;
+  background:rgba(6,15,30,0.85);
+  border:1px solid var(--border);border-radius:9px;
+  color:var(--text-primary);
+  font-family:'Noto Sans SC',sans-serif;font-size:14px;
+  padding:12px 15px 12px 44px;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+input[type="text"]:focus{
+  border-color:var(--accent-blue);
+  box-shadow:0 0 0 3px rgba(59,130,246,0.15);
+}
+input[type="text"]::placeholder{color:var(--text-muted);}
+.quick-label{font-size:11.5px;color:var(--text-muted);margin-bottom:8px;}
+.quick-picks{display:flex;gap:7px;flex-wrap:wrap;}
+.chip{
+  background:rgba(59,130,246,0.07);
+  border:1px solid rgba(59,130,246,0.18);
+  border-radius:20px;color:var(--accent-blue);
+  font-size:12.5px;padding:5px 13px;cursor:pointer;transition:all .2s;
+}
+.chip:hover{background:rgba(59,130,246,0.18);border-color:rgba(59,130,246,0.5);}
+
+/* ===== XRAY RESULT ===== */
+#xray-result{display:none;margin-top:20px;animation:fadeUp .4s ease both;}
+.xray-grid{display:grid;grid-template-columns:290px 1fr;gap:18px;}
+.xray-score-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px 20px;text-align:center;
+}
+.score-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:96px;height:96px;border-radius:50%;
+  font-family:'DM Mono',monospace;font-size:32px;font-weight:700;
+  margin:0 auto 14px;
+}
+.score-badge.aaa{background:radial-gradient(circle,rgba(22,163,74,.2),transparent);border:3px solid var(--green);color:var(--green-mid);box-shadow:0 0 28px rgba(22,163,74,.35);}
+.score-badge.aa {background:radial-gradient(circle,rgba(59,130,246,.2),transparent);border:3px solid var(--accent-blue);color:#93c5fd;box-shadow:0 0 28px rgba(59,130,246,.3);}
+.score-badge.a  {background:radial-gradient(circle,rgba(6,182,212,.15),transparent);border:3px solid var(--accent2);color:#67e8f9;}
+.score-badge.bbb{background:radial-gradient(circle,rgba(212,168,71,.12),transparent);border:3px solid var(--gold);color:var(--gold);}
+.score-badge.bb {background:radial-gradient(circle,rgba(220,38,38,.1),transparent);border:3px solid #f87171;color:#fca5a5;}
+.company-name{font-size:16px;font-weight:700;margin-bottom:3px;line-height:1.3;}
+.company-ticker{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);margin-bottom:12px;}
+.rating-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;justify-content:center;}
+.rating-pill{font-family:'DM Mono',monospace;font-size:10.5px;font-weight:500;padding:3px 9px;border-radius:5px;}
+.pill-msci {background:rgba(59,130,246,.15);color:#93c5fd;border:1px solid rgba(59,130,246,.3);}
+.pill-sp   {background:rgba(212,168,71,.15);color:#fde68a;border:1px solid rgba(212,168,71,.3);}
+.pill-sust {background:rgba(22,163,74,.15); color:#86efac;border:1px solid rgba(22,163,74,.3);}
+.pill-pboc {background:rgba(6,182,212,.15); color:#67e8f9;border:1px solid rgba(6,182,212,.3);}
+.pillar-bars{margin-top:14px;text-align:left;}
+.pillar-row{margin-bottom:11px;}
+.pillar-label{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-secondary);margin-bottom:4px;}
+.pillar-track{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.pillar-fill{height:100%;border-radius:3px;transition:width .85s ease;}
+.fill-e{background:linear-gradient(90deg,#16a34a,#4ade80);}
+.fill-s{background:linear-gradient(90deg,#3b82f6,#93c5fd);}
+.fill-g{background:linear-gradient(90deg,#d4a847,#fde68a);}
+.fill-b{background:linear-gradient(90deg,#7c3aed,#c4b5fd);}
+.xray-detail{display:flex;flex-direction:column;gap:14px;}
+.summary-box{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 22px;
+}
+.summary-text{font-size:13.5px;line-height:1.95;color:var(--text-secondary);}
+.summary-text .hl-green{color:var(--green-mid);background:rgba(22,163,74,.1);padding:1px 6px;border-radius:4px;font-weight:500;}
+.summary-text .hl-red{color:var(--red-mid);background:rgba(220,38,38,.1);padding:1px 6px;border-radius:4px;font-weight:500;}
+.summary-text .hl-gold{color:var(--gold-light);background:rgba(212,168,71,.1);padding:1px 6px;border-radius:4px;font-weight:500;}
+.radar-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+.radar-wrap canvas{max-height:255px;}
+.source-row{display:flex;gap:10px;flex-wrap:wrap;}
+.source-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.22);
+  border-radius:8px;color:var(--accent-blue);
+  font-size:12.5px;font-weight:500;padding:8px 14px;
+  text-decoration:none;transition:all .2s;
+}
+.source-btn:hover{background:rgba(59,130,246,.16);border-color:rgba(59,130,246,.5);transform:translateY(-1px);}
+
+/* ===== BANK KEY METRICS ===== */
+.bank-metrics-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  margin-top:14px;
+}
+.metric-cell{
+  background:rgba(59,130,246,.05);
+  border:1px solid rgba(59,130,246,.12);
+  border-radius:9px;padding:12px 14px;
+}
+.metric-cell-label{font-size:10.5px;color:var(--text-muted);margin-bottom:5px;}
+.metric-cell-value{font-family:'DM Mono',monospace;font-size:16px;font-weight:600;margin-bottom:2px;}
+.metric-cell-sub{font-size:10px;color:var(--text-muted);}
+
+/* ===== SCREENER ===== */
+.screener-controls{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px;
+}
+.control-group label{
+  display:block;font-size:10.5px;color:var(--text-muted);
+  margin-bottom:6px;letter-spacing:.3px;
+}
+select{
+  width:100%;
+  background:rgba(6,15,30,.85);
+  border:1px solid var(--border);border-radius:8px;
+  color:var(--text-primary);
+  font-family:'Noto Sans SC',sans-serif;font-size:12.5px;
+  padding:9px 11px;outline:none;cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2394a3b8' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+  transition:border-color .2s;
+}
+select:focus{border-color:var(--accent-blue);}
+select option{background:#0c1c38;}
+.toggle-group{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.toggle-btn{
+  flex:1;background:transparent;border:none;
+  color:var(--text-muted);
+  font-family:'Noto Sans SC',sans-serif;font-size:12px;font-weight:500;
+  padding:9px 5px;cursor:pointer;transition:all .2s;text-align:center;
+}
+.toggle-btn.active{background:var(--accent-blue);color:#fff;}
+
+/* ===== TABLE ===== */
+.table-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--corp-blue);}
+thead th{
+  padding:11px 15px;text-align:left;
+  font-size:11px;letter-spacing:.5px;color:#93c5fd;font-weight:600;
+}
+tbody tr{
+  background:rgba(6,15,30,.65);
+  border-bottom:1px solid rgba(59,130,246,.07);
+  transition:background .15s;
+}
+tbody tr:hover{background:rgba(18,42,82,.65);}
+tbody td{padding:12px 15px;font-size:13.5px;}
+.td-company{font-weight:600;}
+.td-ticker{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);display:block;}
+.score-num{font-family:'DM Mono',monospace;font-size:14px;font-weight:600;}
+.score-num.high{color:var(--green-mid);}
+.score-num.med {color:#93c5fd;}
+.score-num.low {color:var(--red-mid);}
+.trend-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:5px;
+}
+.trend-up  {background:rgba(22,163,74,.15);color:var(--green-mid);}
+.trend-down{background:rgba(220,38,38,.15);color:var(--red-mid);}
+.trend-flat{background:rgba(148,163,184,.1);color:var(--text-muted);}
+.list-badge{
+  display:inline-block;font-size:11px;font-weight:700;
+  padding:3px 10px;border-radius:20px;letter-spacing:.5px;
+}
+.whitelist{background:rgba(22,163,74,.15);color:var(--green-mid);border:1px solid rgba(22,163,74,.3);}
+.blacklist{background:rgba(220,38,38,.15);color:var(--red-mid);border:1px solid rgba(220,38,38,.3);}
+
+/* ===== CHARTS ROW ===== */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;}
+.charts-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:28px;}
+
+/* ===== RISK MONITOR ===== */
+.risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.risk-card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 20px;
+  position:relative;overflow:hidden;
+}
+.risk-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+}
+.risk-card.high::after  {background:linear-gradient(90deg,var(--red),transparent);}
+.risk-card.med::after   {background:linear-gradient(90deg,var(--gold),transparent);}
+.risk-card.low::after   {background:linear-gradient(90deg,var(--green),transparent);}
+.risk-level{
+  display:inline-block;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:4px;margin-bottom:8px;
+  letter-spacing:.5px;
+}
+.risk-level.high{background:rgba(220,38,38,.2);color:var(--red-mid);}
+.risk-level.med {background:rgba(212,168,71,.2);color:var(--gold-light);}
+.risk-level.low {background:rgba(22,163,74,.2); color:var(--green-mid);}
+.risk-title{font-size:14px;font-weight:700;margin-bottom:6px;}
+.risk-desc{font-size:12.5px;color:var(--text-secondary);line-height:1.7;}
+.risk-bank{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text-muted);margin-top:8px;}
+
+/* ===== REGULATORY TABLE ===== */
+.reg-row{
+  display:flex;gap:12px;align-items:stretch;
+  padding:12px 0;border-bottom:1px solid rgba(59,130,246,.07);
+}
+.reg-row:last-child{border-bottom:none;}
+.reg-date{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--text-muted);min-width:80px;padding-top:2px;
+}
+.reg-body{flex:1;}
+.reg-title{font-size:13.5px;font-weight:600;margin-bottom:4px;}
+.reg-source{font-size:11.5px;color:var(--text-secondary);}
+.reg-tags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.reg-tag{
+  font-size:10px;padding:2px 8px;border-radius:4px;
+  background:rgba(59,130,246,.1);color:#93c5fd;
+  border:1px solid rgba(59,130,246,.2);
+}
+.reg-tag.e{background:rgba(22,163,74,.1);color:#86efac;border-color:rgba(22,163,74,.2);}
+.reg-tag.s{background:rgba(212,168,71,.1);color:#fde68a;border-color:rgba(212,168,71,.2);}
+.reg-tag.g{background:rgba(124,58,237,.1);color:#c4b5fd;border-color:rgba(124,58,237,.2);}
+
+/* ===== COMPARISON TABLE ===== */
+.compare-header{
+  display:grid;font-size:12px;color:var(--text-muted);
+  padding:10px 16px;border-bottom:1px solid var(--border);
+  letter-spacing:.5px;
+}
+.compare-row{
+  display:grid;padding:13px 16px;
+  border-bottom:1px solid rgba(59,130,246,.07);
+  transition:background .15s;align-items:center;
+}
+.compare-row:hover{background:rgba(18,42,82,.5);}
+.compare-row:last-child{border-bottom:none;}
+.compare-bar-wrap{display:flex;align-items:center;gap:8px;}
+.compare-bar-track{flex:1;height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;}
+.compare-bar-fill{height:100%;border-radius:3px;transition:width 1s ease;}
+
+/* ===== GREEN FINANCE ===== */
+.green-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.green-stat{
+  background:rgba(22,163,74,.06);
+  border:1px solid rgba(22,163,74,.15);
+  border-radius:var(--radius);padding:16px 18px;
+}
+.green-stat-label{font-size:11px;color:rgba(134,239,172,.7);margin-bottom:6px;}
+.green-stat-value{font-family:'DM Mono',monospace;font-size:22px;font-weight:700;color:var(--green-mid);margin-bottom:3px;}
+.green-stat-sub{font-size:11px;color:rgba(134,239,172,.5);}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+
+/* ===== LIVE TICKER ===== */
+.ticker-strip{
+  background:rgba(6,15,30,.9);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:10px 18px;
+  display:flex;gap:28px;
+  overflow-x:auto;margin-bottom:28px;
+  scrollbar-width:none;
+}
+.ticker-strip::-webkit-scrollbar{display:none;}
+.ticker-item{display:flex;gap:10px;align-items:center;white-space:nowrap;}
+.ticker-name{font-size:12.5px;font-weight:600;}
+.ticker-price{font-family:'DM Mono',monospace;font-size:12.5px;}
+.ticker-chg{font-family:'DM Mono',monospace;font-size:11.5px;}
+.ticker-chg.up{color:var(--green-mid);}
+.ticker-chg.dn{color:var(--red-mid);}
+.ticker-sep{color:var(--text-muted);font-size:16px;opacity:.3;}
+
+/* ===== MODAL ===== */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--navy-mid);
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  width:90%;max-width:700px;max-height:85vh;overflow-y:auto;
+  padding:28px;animation:fadeUp .3s ease;
+}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.modal-close{
+  background:transparent;border:none;color:var(--text-muted);
+  font-size:22px;cursor:pointer;transition:color .2s;
+}
+.modal-close:hover{color:var(--text-primary);}
+
+/* ===== GRID UTILS ===== */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.mb-20{margin-bottom:20px;}
+.mb-28{margin-bottom:28px;}
+
+/* ===== FOOTER ===== */
+footer{
+  position:relative;z-index:1;
+  background:rgba(6,15,30,.9);
+  border-top:1px solid var(--border);
+  padding:22px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-note{font-size:11.5px;color:var(--text-muted);}
+.footer-sources{display:flex;gap:16px;}
+.footer-sources a{font-size:11.5px;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+.footer-sources a:hover{color:var(--accent-blue);}
+
+/* ===== DATA UPDATE PULSE ===== */
+.data-pulse{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10.5px;color:var(--green-mid);
+  font-family:'DM Mono',monospace;
+}
+</style>
+</head>
+<body>
+
+<!-- 顶部状态栏 -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span><span class="live-dot"></span>数据实时更新中</span>
+    <span class="topbar-rate">LPR 1年期：<span id="lpr1y">3.45%</span></span>
+    <span class="topbar-rate">LPR 5年期：<span id="lpr5y">3.95%</span></span>
+    <span class="topbar-rate">MLF利率：<span id="mlf">2.50%</span></span>
+    <span class="topbar-rate">存款准备金率：<span id="rrr">9.50%</span></span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-rate">沪深300：<span id="csi300" style="color:var(--green-mid)">3,842.16 ↑+0.42%</span></span>
+    <span class="topbar-rate">银行指数：<span id="bankidx" style="color:var(--green-mid)">2,105.88 ↑+0.31%</span></span>
+    <span class="topbar-rate" id="clock-display">--:--:--</span>
+  </div>
+</div>
+
+<!-- 导航栏 -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-icon">银</div>
+    <div>
+      <div class="logo-text">ESG<span>智汇</span> · 银行版</div>
+      <div class="logo-sub">中国银行业ESG综合监测平台</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" class="active" onclick="showTab('overview',this)">总览</a></li>
+    <li><a href="#" onclick="showTab('xray',this)">X光透视</a></li>
+    <li><a href="#" onclick="showTab('screener',this)">智能筛选</a></li>
+    <li><a href="#" onclick="showTab('greenfinance',this)">绿色金融</a></li>
+    <li><a href="#" onclick="showTab('risk',this)">风险预警</a></li>
+    <li><a href="#" onclick="showTab('regulatory',this)">监管动态</a></li>
+    <li><a href="#" onclick="showTab('compare',this)">横向对比</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="data-pulse"><span class="live-dot"></span><span id="last-update">数据更新中…</span></div>
+    <div class="nav-badge">人民银行认证数据</div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ==================== 实时股价滚动条 ==================== -->
+<div class="ticker-strip">
+  <div class="ticker-item">
+    <span class="ticker-name">工商银行</span>
+    <span class="ticker-price" id="t-icbc">5.42</span>
+    <span class="ticker-chg up" id="tc-icbc">↑+0.37%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">建设银行</span>
+    <span class="ticker-price" id="t-ccb">6.81</span>
+    <span class="ticker-chg up" id="tc-ccb">↑+0.15%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">农业银行</span>
+    <span class="ticker-price" id="t-abc">3.94</span>
+    <span class="ticker-chg up" id="tc-abc">↑+0.51%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">中国银行</span>
+    <span class="ticker-price" id="t-boc">4.27</span>
+    <span class="ticker-chg dn" id="tc-boc">↓-0.23%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">交通银行</span>
+    <span class="ticker-price" id="t-bocom">6.33</span>
+    <span class="ticker-chg up" id="tc-bocom">↑+0.48%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">招商银行</span>
+    <span class="ticker-price" id="t-cmb">31.52</span>
+    <span class="ticker-chg dn" id="tc-cmb">↓-0.63%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">兴业银行</span>
+    <span class="ticker-price" id="t-cib">14.87</span>
+    <span class="ticker-chg up" id="tc-cib">↑+0.27%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">浦发银行</span>
+    <span class="ticker-price" id="t-spdb">7.45</span>
+    <span class="ticker-chg dn" id="tc-spdb">↓-0.40%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">中信银行</span>
+    <span class="ticker-price" id="t-citic">5.96</span>
+    <span class="ticker-chg up" id="tc-citic">↑+0.17%</span>
+  </div>
+  <span class="ticker-sep">|</span>
+  <div class="ticker-item">
+    <span class="ticker-name">邮储银行</span>
+    <span class="ticker-price" id="t-psbc">4.78</span>
+    <span class="ticker-chg up" id="tc-psbc">↑+0.63%</span>
+  </div>
+</div>
+
+<!-- ==================== 页签内容 ==================== -->
+
+<!-- ======== 总览 ======== -->
+<div id="tab-overview" class="tab-pane active">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">// 中国银行业 ESG 综合监测平台 v3.0</div>
+      <h1>动态ESG <em>银行业</em><br>综合监测系统</h1>
+      <p class="hero-sub">整合中国人民银行、银保监会、明晟（MSCI）、标普全球CSA及晨星Sustainalytics五大权威数据源，专为中国银行业ESG评级监测、绿色金融合规跟踪及风险预警而构建的机构级分析平台。</p>
+      <div class="hero-tags">
+        <span class="hero-tag">🏦 六大国有银行</span>
+        <span class="hero-tag">📊 12家股份制银行</span>
+        <span class="hero-tag">🌿 绿色信贷监测</span>
+        <span class="hero-tag">📋 双碳政策追踪</span>
+        <span class="hero-tag">⚡ 实时风险预警</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-right-title">// 最新监管政策动态</div>
+      <div class="policy-feed">
+        <div class="policy-item" style="cursor:pointer;" onclick="window.open('http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html','_blank')">
+          <div class="policy-dot green"></div>
+          <div>
+            <div class="policy-text"><strong>人民银行等四部委</strong>联合发布《关于发挥绿色金融作用 服务美丽中国建设的意见》，扩展碳减排工具覆盖范围，推动绿色金融标准体系建设。</div>
+            <div class="policy-date">2024-10-12 · gov.cn ↗</div>
+          </div>
+        </div>
+        <div class="policy-item" style="cursor:pointer;" onclick="window.open('https://www.sse.com.cn/lawandrules/sselawsrules/stocks/mainipo/c/c_20240412_5737862.shtml','_blank')">
+          <div class="policy-dot blue"></div>
+          <div>
+            <div class="policy-text"><strong>沪深北交易所</strong>发布《上市公司可持续发展报告指引（试行）》，自2024年5月1日起施行，上证180成分股银行须强制披露ESG报告。</div>
+            <div class="policy-date">2024-04-12 · sse.com.cn ↗</div>
+          </div>
+        </div>
+        <div class="policy-item" style="cursor:pointer;" onclick="window.open('http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/5779612/index.html','_blank')">
+          <div class="policy-dot gold"></div>
+          <div>
+            <div class="policy-text"><strong>人民银行 + 金融监管总局 + 证监会</strong>联合发布《绿色金融支持项目目录（2025年版）》，新增储能、绿氢、CCUS类别，2025年10月起施行。</div>
+            <div class="policy-date">2025-06 · pbc.gov.cn ↗</div>
+          </div>
+        </div>
+        <div class="policy-item" style="cursor:pointer;" onclick="window.open('https://www.gov.cn/zhengce/zhengceku/2021-06/11/content_5616962.htm','_blank')">
+          <div class="policy-dot red"></div>
+          <div>
+            <div class="policy-text"><strong>人民银行</strong>《银行业金融机构绿色金融评价方案》正式施行，绿色信贷和绿色债券评价结果纳入MPA宏观审慎评估体系，影响差别准备金率。</div>
+            <div class="policy-date">2021-07-01 · gov.cn ↗</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 核心统计 -->
+  <div class="stats-row">
+    <div class="stat-card blue">
+      <div class="stat-icon">🏦</div>
+      <div class="stat-label">监测银行数量</div>
+      <div class="stat-value" style="color:#93c5fd" id="st-banks">28</div>
+      <div class="stat-delta delta-up">含6家国有 + 12家股份制</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon">🌿</div>
+      <div class="stat-label">绿色信贷余额（万亿）</div>
+      <div class="stat-value" style="color:var(--green-mid)" id="st-green">31.7</div>
+      <div class="stat-delta delta-up">↑ 同比 +36.5%</div>
+    </div>
+    <div class="stat-card gold">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-label">银行业ESG均分</div>
+      <div class="stat-value" style="color:var(--gold)" id="st-esgscore">71.3</div>
+      <div class="stat-delta delta-up">↑ 较上年 +3.8分</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-label">活跃风险预警</div>
+      <div class="stat-value" style="color:var(--red-mid)" id="st-alerts">12</div>
+      <div class="stat-delta delta-down">↑ 本周新增 3 条</div>
+    </div>
+    <div class="stat-card cyan">
+      <div class="stat-icon">📜</div>
+      <div class="stat-label">MSCI AAA级银行数</div>
+      <div class="stat-value" style="color:#67e8f9" id="st-aaa">3</div>
+      <div class="stat-delta delta-up">↑ 较上季 +1 家</div>
+    </div>
+  </div>
+
+  <!-- 图表区：趋势 + 分布 -->
+  <div class="charts-row mb-28">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">中国银行业ESG综合评分走势（近12月）</span>
+        <span class="card-meta">六大行加权平均</span>
+      </div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="lineChart" height="185"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">主要银行ESG三维度评分对比</span>
+        <span class="card-meta">E / S / G 柱状分组</span>
+      </div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="barChart" height="185"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图表区第二行 -->
+  <div class="charts-row-3 mb-28">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">绿色信贷行业分布</span>
+        <span class="card-meta">截至2024Q3</span>
+      </div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="doughnutChart" height="200"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">银行MSCI评级分布</span>
+        <span class="card-meta">当前评级层级</span>
+      </div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="ratingChart" height="200"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">ESG评级12月动量变化</span>
+        <span class="card-meta">分值变化（+/-）</span>
+      </div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="momentumChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-overview -->
+
+<!-- ======== X光透视 ======== -->
+<div id="tab-xray" class="tab-pane">
+  <div class="section-header mb-20">
+    <div class="section-left">
+      <div class="section-title">实体ESG X光透视</div>
+      <div class="section-tag">// 模块A — 银行深度画像</div>
+    </div>
+  </div>
+
+  <div class="card mb-20">
+    <div class="card-header">
+      <span class="card-title">搜索银行并生成ESG深度报告</span>
+      <span class="card-meta">数据源：MSCI · 标普CSA · Sustainalytics · 人民银行 · 银保监会</span>
+    </div>
+    <div class="card-body">
+      <div class="search-bar">
+        <div class="search-input-wrap">
+          <input type="text" id="search-input" placeholder="输入银行名称或股票代码（如：工商银行、招商银行、601398…）"/>
+        </div>
+        <button class="btn-primary" onclick="generateReport()">生成报告</button>
+      </div>
+      <div class="quick-label">快速访问 — 六大国有银行：</div>
+      <div class="quick-picks" style="margin-bottom:10px;">
+        <div class="chip" onclick="loadCompany('工商银行')">🏦 工商银行</div>
+        <div class="chip" onclick="loadCompany('建设银行')">🏗️ 建设银行</div>
+        <div class="chip" onclick="loadCompany('农业银行')">🌾 农业银行</div>
+        <div class="chip" onclick="loadCompany('中国银行')">🌐 中国银行</div>
+        <div class="chip" onclick="loadCompany('交通银行')">🚂 交通银行</div>
+        <div class="chip" onclick="loadCompany('邮储银行')">📮 邮储银行</div>
+      </div>
+      <div class="quick-label">股份制银行：</div>
+      <div class="quick-picks">
+        <div class="chip" onclick="loadCompany('招商银行')">💳 招商银行</div>
+        <div class="chip" onclick="loadCompany('兴业银行')">♻️ 兴业银行</div>
+        <div class="chip" onclick="loadCompany('浦发银行')">🏙️ 浦发银行</div>
+        <div class="chip" onclick="loadCompany('中信银行')">🔵 中信银行</div>
+        <div class="chip" onclick="loadCompany('光大银行')">☀️ 光大银行</div>
+        <div class="chip" onclick="loadCompany('平安银行')">🛡️ 平安银行</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="xray-result">
+    <div class="xray-grid">
+      <div class="xray-score-card">
+        <div id="score-badge" class="score-badge aaa">AAA</div>
+        <div id="company-name" class="company-name">—</div>
+        <div id="company-ticker" class="company-ticker">—</div>
+        <div id="rating-pills" class="rating-pills"></div>
+        <div class="pillar-bars">
+          <div class="pillar-row">
+            <div class="pillar-label"><span>E — 环境</span><span id="e-score">—</span></div>
+            <div class="pillar-track"><div id="e-bar" class="pillar-fill fill-e" style="width:0%"></div></div>
+          </div>
+          <div class="pillar-row">
+            <div class="pillar-label"><span>S — 社会</span><span id="s-score">—</span></div>
+            <div class="pillar-track"><div id="s-bar" class="pillar-fill fill-s" style="width:0%"></div></div>
+          </div>
+          <div class="pillar-row">
+            <div class="pillar-label"><span>G — 治理</span><span id="g-score">—</span></div>
+            <div class="pillar-track"><div id="g-bar" class="pillar-fill fill-g" style="width:0%"></div></div>
+          </div>
+          <div class="pillar-row">
+            <div class="pillar-label"><span>B — 银行特定指标</span><span id="b-score">—</span></div>
+            <div class="pillar-track"><div id="b-bar" class="pillar-fill fill-b" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="xray-detail">
+        <div class="summary-box">
+          <div style="font-weight:600;font-size:13px;margin-bottom:10px;">AI同行对标分析摘要</div>
+          <div id="summary-text" class="summary-text">—</div>
+        </div>
+        <div class="summary-box">
+          <div style="font-weight:600;font-size:13px;margin-bottom:12px;">银行核心经营指标</div>
+          <div id="bank-metrics" class="bank-metrics-grid"></div>
+        </div>
+        <div class="radar-wrap">
+          <div style="font-weight:600;font-size:13px;margin-bottom:12px;">20维度银行ESG表现雷达图</div>
+          <canvas id="radarChart"></canvas>
+        </div>
+        <div class="summary-box">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase;">核实官方数据来源</div>
+          <div class="source-row">
+            <a class="source-btn" href="https://www.msci.com/our-solutions/esg-investing/esg-ratings-climate-search-tool" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>核实MSCI评级
+            </a>
+            <a class="source-btn" href="https://www.spglobal.com/esg/solutions/data-intelligence-esg-scores" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>核实标普CSA评分
+            </a>
+            <a class="source-btn" href="http://www.pbc.gov.cn/tiaofasi/144941/144979/index.html" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>人民银行绿色金融
+            </a>
+            <a class="source-btn" href="https://finance.sina.com.cn/esg/ep/2024-02-22/doc-inaiuitn3310681.shtml" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>银行业ESG评级研究
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /tab-xray -->
+
+<!-- ======== 智能筛选 ======== -->
+<div id="tab-screener" class="tab-pane">
+  <div class="section-header mb-20">
+    <div class="section-left">
+      <div class="section-title">最优策略智能筛选器</div>
+      <div class="section-tag">// 模块B — 银行ESG动量与价值</div>
+    </div>
+  </div>
+  <div class="card mb-20">
+    <div class="card-header"><span class="card-title">多维ESG因子筛选引擎</span></div>
+    <div class="card-body">
+      <div class="screener-controls">
+        <div class="control-group">
+          <label>银行类型</label>
+          <select id="bank-type-select">
+            <option value="">全部类型</option>
+            <option value="state">六大国有银行</option>
+            <option value="joint">股份制商业银行</option>
+            <option value="city">城市商业银行</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>ESG主题（二级）</label>
+          <select id="theme-select" onchange="updateL3()">
+            <option value="">全部主题</option>
+            <option value="climate">气候变化（E）</option>
+            <option value="green">绿色信贷（E）</option>
+            <option value="human">人力资本（S）</option>
+            <option value="inclusion">普惠金融（S）</option>
+            <option value="governance">公司治理（G）</option>
+            <option value="data">数据安全（G）</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>具体指标（三级）</label>
+          <select id="indicator-select"><option>请先选择主题</option></select>
+        </div>
+        <div class="control-group">
+          <label>投资因子</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="toggle-abs" onclick="setFactor('abs')">绝对评分</button>
+            <button class="toggle-btn" id="toggle-trend" onclick="setFactor('trend')">12月趋势</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label>名单类型</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="toggle-desc" onclick="setOrder('desc')">▼ 白名单</button>
+            <button class="toggle-btn" id="toggle-asc" onclick="setOrder('asc')">▲ 黑名单</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label>监管评级过滤</label>
+          <select id="reg-filter-select">
+            <option value="">全部评级</option>
+            <option value="aaa">MSCI AAA</option>
+            <option value="aa">MSCI AA及以上</option>
+            <option value="a">MSCI A及以上</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="runScreener()" style="margin-bottom:18px;">执行筛选</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>排名</th><th>银行</th><th>类型</th><th>ESG综合</th>
+              <th>MSCI评级</th><th>12M趋势</th><th>标普CSA</th>
+              <th>绿色信贷占比</th><th>不良贷款率</th><th>名单</th>
+            </tr>
+          </thead>
+          <tbody id="screener-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div><!-- /tab-screener -->
+
+<!-- ======== 绿色金融 ======== -->
+<div id="tab-greenfinance" class="tab-pane">
+  <div class="section-header mb-20">
+    <div class="section-left">
+      <div class="section-title">绿色金融监测中心</div>
+      <div class="section-tag">// 绿色信贷 · 绿色债券 · 碳账户</div>
+    </div>
+  </div>
+
+  <div class="green-stats">
+    <div class="green-stat">
+      <div class="green-stat-label">银行业绿色信贷余额</div>
+      <div class="green-stat-value">31.7万亿</div>
+      <div class="green-stat-sub">↑ 同比增长 36.5%（人民银行，2024Q3）</div>
+    </div>
+    <div class="green-stat">
+      <div class="green-stat-label">绿色债券发行总量（年累）</div>
+      <div class="green-stat-value">9,842亿</div>
+      <div class="green-stat-sub">↑ 同比增长 22.1%（中债登，2024）</div>
+    </div>
+    <div class="green-stat">
+      <div class="green-stat-label">碳账户开立数量</div>
+      <div class="green-stat-value">186万户</div>
+      <div class="green-stat-sub">↑ 较年初增长 41%（各行合并统计）</div>
+    </div>
+  </div>
+
+  <div class="two-col mb-28">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">主要银行绿色信贷余额（亿元）</span>
+        <span class="card-meta">2024Q3</span>
+      </div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="greenLoanChart" height="200"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">绿色信贷行业分布（占比）</span>
+        <span class="card-meta">按贷款用途分类</span>
+      </div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="greenSectorChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-28">
+    <div class="card-header">
+      <span class="card-title">银行绿色金融综合表现排名</span>
+      <span class="card-meta">绿色信贷 · 绿色债券 · 碳金融 · 信息披露</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div class="compare-header" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;">
+        <span>银行名称</span><span>绿色信贷占比</span><span>绿色债券（亿）</span><span>碳账户（万）</span><span>披露质量</span><span>综合评级</span>
+      </div>
+      <div id="green-table-body"></div>
+    </div>
+  </div>
+</div><!-- /tab-greenfinance -->
+
+<!-- ======== 风险预警 ======== -->
+<div id="tab-risk" class="tab-pane">
+  <div class="section-header mb-20">
+    <div class="section-left">
+      <div class="section-title">ESG风险实时预警</div>
+      <div class="section-tag">// 监控 · 预警 · 处置建议</div>
+    </div>
+    <div class="data-pulse"><span class="live-dot"></span>每5分钟自动刷新</div>
+  </div>
+  <div class="risk-grid" id="risk-grid-container"></div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><span class="card-title">ESG风险热力图（各行业维度）</span></div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="riskHeatChart" height="220"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">风险事件历史追踪（近6月）</span></div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="riskTimeChart" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+</div><!-- /tab-risk -->
+
+<!-- ======== 监管动态 ======== -->
+<div id="tab-regulatory" class="tab-pane">
+  <div class="section-header mb-20">
+    <div class="section-left">
+      <div class="section-title">监管政策动态库</div>
+      <div class="section-tag">// 人民银行 · 金融监管总局 · 证监会 · 发改委 · 2020–2025</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span style="font-size:11px;color:var(--text-muted);">数据更新至 2025年Q1</span>
+    </div>
+  </div>
+
+  <!-- 官方数据源快捷入口 -->
+  <div class="card mb-20">
+    <div class="card-header">
+      <span class="card-title">🔗 官方监管机构数据源直达入口</span>
+      <span class="card-meta">点击可跳转至对应机构官网查阅原始文件</span>
+    </div>
+    <div class="card-body" style="padding:16px 22px;">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;">
+        <a href="http://www.pbc.gov.cn/tiaofasi/144941/144979/index.html" target="_blank" rel="noopener" class="source-btn" style="flex-direction:column;align-items:flex-start;gap:4px;padding:14px 16px;text-decoration:none;">
+          <span style="font-size:11px;color:var(--text-muted);">货币政策 / 绿色金融</span>
+          <span style="font-weight:700;font-size:13px;">中国人民银行</span>
+          <span style="font-size:10px;opacity:.6;">pbc.gov.cn ↗</span>
+        </a>
+        <a href="https://www.nfra.gov.cn/cn/view/pages/ItemList.html?itemPId=915&itemId=4115" target="_blank" rel="noopener" class="source-btn" style="flex-direction:column;align-items:flex-start;gap:4px;padding:14px 16px;text-decoration:none;">
+          <span style="font-size:11px;color:var(--text-muted);">政策法规库</span>
+          <span style="font-weight:700;font-size:13px;">国家金融监督管理总局</span>
+          <span style="font-size:10px;opacity:.6;">nfra.gov.cn ↗</span>
+        </a>
+        <a href="https://www.sse.com.cn/lawandrules/sselawsrules/stocks/mainipo/c/c_20240412_5737862.shtml" target="_blank" rel="noopener" class="source-btn" style="flex-direction:column;align-items:flex-start;gap:4px;padding:14px 16px;text-decoration:none;">
+          <span style="font-size:11px;color:var(--text-muted);">可持续发展报告指引</span>
+          <span style="font-weight:700;font-size:13px;">上海证券交易所</span>
+          <span style="font-size:10px;opacity:.6;">sse.com.cn ↗</span>
+        </a>
+        <a href="https://www.gov.cn/zhengce/zhengceku/202410/content_6979595.htm" target="_blank" rel="noopener" class="source-btn" style="flex-direction:column;align-items:flex-start;gap:4px;padding:14px 16px;text-decoration:none;">
+          <span style="font-size:11px;color:var(--text-muted);">美丽中国绿色金融意见</span>
+          <span style="font-weight:700;font-size:13px;">中国政府网</span>
+          <span style="font-size:10px;opacity:.6;">gov.cn ↗</span>
+        </a>
+        <a href="https://www.mee.gov.cn/xxgk2018/xxgk/xxgk03/202010/t20201026_803792.html" target="_blank" rel="noopener" class="source-btn" style="flex-direction:column;align-items:flex-start;gap:4px;padding:14px 16px;text-decoration:none;">
+          <span style="font-size:11px;color:var(--text-muted);">气候投融资指导意见</span>
+          <span style="font-weight:700;font-size:13px;">生态环境部</span>
+          <span style="font-size:10px;opacity:.6;">mee.gov.cn ↗</span>
+        </a>
+      </div>
+      <!-- 筛选控制 -->
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:11px;color:var(--text-muted);white-space:nowrap;">筛选：</div>
+        <select id="reg-org-filter" onchange="renderRegulatory()" style="width:160px;">
+          <option value="">全部机构</option>
+          <option value="人民银行">中国人民银行</option>
+          <option value="金融监管总局">金融监管总局</option>
+          <option value="证监会">中国证监会</option>
+          <option value="发改委">国家发改委</option>
+          <option value="生态环境部">生态环境部</option>
+          <option value="国务院">国务院</option>
+        </select>
+        <select id="reg-year-filter" onchange="renderRegulatory()" style="width:150px;">
+          <option value="">全部年份</option>
+          <option value="2025">2025年</option>
+          <option value="2024">2024年</option>
+          <option value="2023">2023年</option>
+          <option value="2022">2022年</option>
+          <option value="2021">2021年</option>
+          <option value="2020">2020年</option>
+        </select>
+        <select id="reg-pillar-filter" onchange="renderRegulatory()" style="width:150px;">
+          <option value="">全部ESG维度</option>
+          <option value="E">E — 环境</option>
+          <option value="S">S — 社会</option>
+          <option value="G">G — 治理</option>
+        </select>
+        <select id="reg-impact-filter" onchange="renderRegulatory()" style="width:150px;">
+          <option value="">全部影响级别</option>
+          <option value="high">重大影响</option>
+          <option value="medium">中度影响</option>
+          <option value="low">一般影响</option>
+        </select>
+        <span id="reg-count-badge" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);margin-left:auto;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 政策列表 -->
+  <div class="two-col mb-20">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📋 政策文件列表</span>
+        <span class="card-meta">含官网原文链接</span>
+      </div>
+      <div class="card-body" id="reg-list-left" style="padding:6px 14px;max-height:620px;overflow-y:auto;"></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📊 政策趋势分析</span>
+        <span class="card-meta">重点方向解读</span>
+      </div>
+      <div class="card-body" id="reg-list-right" style="padding:14px 18px;"></div>
+    </div>
+  </div>
+
+  <!-- 政策时间轴 -->
+  <div class="card mb-20">
+    <div class="card-header">
+      <span class="card-title">🗓️ 监管政策时间轴（2020–2025）</span>
+    </div>
+    <div class="card-body" style="padding:14px 18px 18px;">
+      <canvas id="regTimelineChart" height="120"></canvas>
+    </div>
+  </div>
+
+</div><!-- /tab-regulatory -->
+
+<!-- ======== 横向对比 ======== -->
+<div id="tab-compare" class="tab-pane">
+  <div class="section-header mb-20">
+    <div class="section-left">
+      <div class="section-title">银行ESG横向对比分析</div>
+      <div class="section-tag">// 六大行全维度对标</div>
+    </div>
+  </div>
+  <div class="card mb-20">
+    <div class="card-header">
+      <span class="card-title">六大国有银行ESG综合对比</span>
+      <span class="card-meta">评分 / 绿色信贷 / 不良贷款 / 资本充足率</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div class="compare-header" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr 1fr 1fr;">
+        <span style="padding-left:16px;">银行</span>
+        <span>ESG综合分</span><span>MSCI评级</span>
+        <span>绿色信贷占比</span><span>不良贷款率</span>
+        <span>资本充足率</span><span>ROE</span>
+      </div>
+      <div id="compare-table-body"></div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><span class="card-title">六大行雷达图对比</span></div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="compareRadarChart" height="260"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">ESG评分与绿色信贷散点图</span></div>
+      <div class="card-body" style="padding:14px 18px 18px;">
+        <canvas id="scatterChart" height="260"></canvas>
+      </div>
+    </div>
+  </div>
+</div><!-- /tab-compare -->
+
+</main>
+
+<footer>
+  <div class="footer-note">ESG智汇银行版 · 数据整合自人民银行、金融监管总局、明晟（MSCI）、标普全球Sustainable1及晨星Sustainalytics · 仅供持牌机构专业投资者参考</div>
+  <div class="footer-sources">
+    <a href="https://www.gov.cn/zhengce/zhengceku/2021-06/11/content_5616962.htm" target="_blank">人民银行绿色金融 ↗</a>
+    <a href="https://www.msci.com/our-solutions/esg-investing/esg-ratings-climate-search-tool" target="_blank">MSCI ESG评级 ↗</a>
+    <a href="https://www.spglobal.com/esg/solutions/data-intelligence-esg-scores" target="_blank">标普CSA ↗</a>
+    <a href="https://www.sse.com.cn/lawandrules/sselawsrules/stocks/mainipo/c/c_20240412_5737862.shtml" target="_blank">可持续发展报告指引 ↗</a>
+    <a href="https://finance.sina.com.cn/esg/ep/2024-02-22/doc-inaiuitn3310681.shtml" target="_blank">银行ESG评级研报 ↗</a>
+  </div>
+</footer>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+// ===================================================
+// ① 数据库
+// ===================================================
+const BANKS = {
+  '工商银行':{
+    full:'中国工商银行股份有限公司', ticker:'601398.SS / 1398.HK',
+    type:'state', msci:'AAA', sp:62, sust:'11.2（低风险）', pboc:'A+',
+    badgeClass:'aaa', e:88, s:78, g:85, b:82,
+    trend:'+5', greenLoan:4.5, npl:1.36, car:19.1, roe:11.2,
+    greenBond:2800, carbonAcc:42,
+    metrics:{总资产:'47.8万亿', 绿色信贷占比:'12.3%', 不良贷款率:'1.36%', 资本充足率:'19.1%', ROE:'11.2%', 碳排放强度:'0.42tCO₂/百万元', 女性高管占比:'28%', 普惠贷款客户:'780万户'},
+    summary:`工商银行持有明晟最高ESG评级<span class="hl-green">AAA</span>，在全球银行业中位居<span class="hl-green">前3%</span>，是唯一获此殊荣的中国银行。绿色信贷余额达<span class="hl-green">4.5万亿元</span>，年增38%，<span class="hl-green">全球银行中排名第一</span>。社会维度得分78分，普惠金融覆盖客户超780万，<span class="hl-green">显著高于同业均值</span>。治理维度85分，独立董事占比与信息披露质量均<span class="hl-green">位于行业最优水平</span>。Sustainalytics风险值11.2，人民银行绿色评价<span class="hl-green">A+</span>，综合风险极低。`,
+    radar:[92,88,85,82,78,80,88,85,82,79,88,90,83,86,88,84,80,82,79,86],
+    radarPeer:[70,68,70,65,68,70,72,69,65,68,70,71,66,68,72,69,65,67,64,70]
+  },
+  '建设银行':{
+    full:'中国建设银行股份有限公司', ticker:'601939.SS / 939.HK',
+    type:'state', msci:'AA', sp:59, sust:'13.8（低风险）', pboc:'A+',
+    badgeClass:'aa', e:85, s:80, g:83, b:80,
+    trend:'+4', greenLoan:4.1, npl:1.37, car:17.9, roe:12.0,
+    greenBond:2500, carbonAcc:38,
+    metrics:{总资产:'40.1万亿', 绿色信贷占比:'13.5%', 不良贷款率:'1.37%', 资本充足率:'17.9%', ROE:'12.0%', 碳排放强度:'0.48tCO₂/百万元', 女性高管占比:'25%', 住房租赁贷款:'8,200亿'},
+    summary:`建设银行保持明晟<span class="hl-green">AA级</span>评级，标普全球CSA评分59分，<span class="hl-green">高于行业中位数11分</span>。绿色信贷余额4.1万亿，<span class="hl-green">绿色信贷占比13.5%全行业领先</span>。环境维度85分反映其在绿色建筑金融领域的突出优势。社会维度80分中住房租赁贷款规模超8200亿，<span class="hl-green">践行"住有所居"政策导向</span>。Sustainalytics将其标记为<span class="hl-green">低风险</span>，人民银行绿色评价<span class="hl-green">A+</span>。`,
+    radar:[88,85,83,80,80,82,85,82,80,78,83,86,80,84,85,82,77,80,76,83],
+    radarPeer:[70,68,70,65,68,70,72,69,65,68,70,71,66,68,72,69,65,67,64,70]
+  },
+  '农业银行':{
+    full:'中国农业银行股份有限公司', ticker:'601288.SS / 1288.HK',
+    type:'state', msci:'AA', sp:56, sust:'15.4（低风险）', pboc:'A',
+    badgeClass:'aa', e:80, s:85, g:79, b:78,
+    trend:'+3', greenLoan:3.8, npl:1.33, car:17.4, roe:11.5,
+    greenBond:1800, carbonAcc:25,
+    metrics:{总资产:'39.6万亿', 绿色信贷占比:'10.8%', 不良贷款率:'1.33%', 资本充足率:'17.4%', ROE:'11.5%', 碳排放强度:'0.55tCO₂/百万元', 涉农贷款余额:'24.6万亿', 县域营业网点:'11,000+'},
+    summary:`农业银行维持明晟<span class="hl-green">AA评级</span>，在服务乡村振兴与普惠金融方面表现<span class="hl-green">远超同业基准</span>。社会维度85分在六大行中<span class="hl-green">排名最高</span>，涉农贷款余额高达24.6万亿，县域网点超1.1万个，彰显其独特社会使命。环境维度80分绿色信贷余额3.8万亿，<span class="hl-green">稳居行业前三</span>。不良贷款率1.33%为六大行最低，治理稳健性<span class="hl-gold">略低于工行与建行</span>，但持续改善。`,
+    radar:[82,80,79,76,85,88,82,80,76,80,79,83,77,80,82,79,78,75,74,80],
+    radarPeer:[70,68,70,65,68,70,72,69,65,68,70,71,66,68,72,69,65,67,64,70]
+  },
+  '中国银行':{
+    full:'中国银行股份有限公司', ticker:'601988.SS / 3988.HK',
+    type:'state', msci:'AA', sp:58, sust:'14.6（低风险）', pboc:'A',
+    badgeClass:'aa', e:82, s:77, g:81, b:79,
+    trend:'+2', greenLoan:3.2, npl:1.27, car:18.1, roe:10.8,
+    greenBond:2200, carbonAcc:20,
+    metrics:{总资产:'33.6万亿', 绿色信贷占比:'11.4%', 不良贷款率:'1.27%', 资本充足率:'18.1%', ROE:'10.8%', 境外机构数:'54个国家/地区', 绿色债券余额:'2,200亿', '跨境绿色贷款':'560亿'},
+    summary:`中国银行持有明晟<span class="hl-green">AA评级</span>，其全球化ESG布局具有独特竞争优势。跨境绿色贷款规模560亿元，<span class="hl-green">在国际化绿色金融领域领跑国内同行</span>。不良贷款率1.27%为六大行中<span class="hl-green">最优</span>，反映资产质量卓越。标普CSA评分58分<span class="hl-green">高于银行业均值</span>。社会维度77分在社区发展与员工培训方面<span class="hl-gold">仍有提升空间</span>，但整体ESG框架日趋完善。`,
+    radar:[84,82,81,78,77,76,82,79,78,77,81,83,78,80,83,80,75,79,72,80],
+    radarPeer:[70,68,70,65,68,70,72,69,65,68,70,71,66,68,72,69,65,67,64,70]
+  },
+  '交通银行':{
+    full:'交通银行股份有限公司', ticker:'601328.SS / 3328.HK',
+    type:'state', msci:'A', sp:52, sust:'19.8（低风险）', pboc:'A-',
+    badgeClass:'a', e:75, s:72, g:74, b:70,
+    trend:'+1', greenLoan:1.8, npl:1.35, car:15.8, roe:9.8,
+    greenBond:950, carbonAcc:12,
+    metrics:{总资产:'14.8万亿', 绿色信贷占比:'9.3%', 不良贷款率:'1.35%', 资本充足率:'15.8%', ROE:'9.8%', 碳排放强度:'0.71tCO₂/百万元', ESG报告发布:'连续10年', 绿色债券余额:'950亿'},
+    summary:`交通银行保持明晟<span class="hl-green">A级评级</span>，综合ESG表现在六大行中<span class="hl-gold">处于中等水平</span>。绿色信贷余额1.8万亿，增速28%，仍有较大提升空间。环境维度75分显示其碳排放强度<span class="hl-gold">略高于国有大行均值</span>。治理维度74分，资本充足率15.8%<span class="hl-red">低于同类国有行平均水平</span>，需关注资本补充节奏。整体ESG动量为+1，<span class="hl-gold">改善速度相对温和</span>。`,
+    radar:[76,75,74,70,72,71,75,73,70,72,74,76,70,73,75,72,68,70,66,73],
+    radarPeer:[70,68,70,65,68,70,72,69,65,68,70,71,66,68,72,69,65,67,64,70]
+  },
+  '邮储银行':{
+    full:'中国邮政储蓄银行股份有限公司', ticker:'601658.SS / 1658.HK',
+    type:'state', msci:'A', sp:50, sust:'22.1（低风险）', pboc:'A-',
+    badgeClass:'a', e:72, s:82, g:71, b:73,
+    trend:'+6', greenLoan:1.5, npl:0.83, car:14.9, roe:11.1,
+    greenBond:620, carbonAcc:15,
+    metrics:{总资产:'15.6万亿', 绿色信贷占比:'8.1%', 不良贷款率:'0.83%', 资本充足率:'14.9%', ROE:'11.1%', 网点数量:'3.9万个', 县域及以下网点占比:'70%', 农村普惠贷款:'1.8万亿'},
+    summary:`邮储银行以<span class="hl-green">0.83%的不良贷款率稳居全行业最低</span>，资产质量堪称业内标杆。明晟A级评级，近12月ESG动量+6，<span class="hl-green">改善速度在六大行中领先</span>。社会维度82分，县域网点达3.9万个，农村普惠贷款余额1.8万亿，<span class="hl-green">践行金融服务实体与乡村振兴</span>。环境与治理维度相对六大行<span class="hl-gold">仍有差距</span>，但绿色信贷增速加快，整体ESG提升趋势明确。`,
+    radar:[73,72,71,69,82,84,74,70,68,72,71,74,68,70,72,70,75,72,68,74],
+    radarPeer:[70,68,70,65,68,70,72,69,65,68,70,71,66,68,72,69,65,67,64,70]
+  },
+  '招商银行':{
+    full:'招商银行股份有限公司', ticker:'600036.SS / 3968.HK',
+    type:'joint', msci:'AA', sp:60, sust:'16.2（低风险）', pboc:'A',
+    badgeClass:'aa', e:80, s:79, g:85, b:82,
+    trend:'+3', greenLoan:1.2, npl:0.95, car:17.9, roe:16.2,
+    greenBond:800, carbonAcc:18,
+    metrics:{总资产:'11.0万亿', 绿色信贷占比:'8.8%', 不良贷款率:'0.95%', 资本充足率:'17.9%', ROE:'16.2%', 零售AUM:'13.3万亿', ESG数据第三方审计:'已完成', 员工满意度:'87%'},
+    summary:`招商银行持有明晟<span class="hl-green">AA评级</span>，在股份制银行中综合ESG表现<span class="hl-green">稳居第一</span>。ROE 16.2%为银行业中<span class="hl-green">最优水平</span>之一，体现优质盈利能力与ESG的协同。治理维度85分尤为突出，ESG数据已完成第三方独立审计，<span class="hl-green">信息披露质量行业领先</span>。标普CSA评分60分<span class="hl-green">高于股份制银行平均</span>。不良贷款率0.95%，整体风险极低。`,
+    radar:[82,80,85,80,79,80,83,80,82,80,85,82,80,83,84,81,79,80,78,83],
+    radarPeer:[66,65,67,63,65,66,68,65,62,64,67,68,63,65,68,65,62,63,60,66]
+  },
+  '兴业银行':{
+    full:'兴业银行股份有限公司', ticker:'601166.SS',
+    type:'joint', msci:'A', sp:55, sust:'20.4（低风险）', pboc:'A',
+    badgeClass:'a', e:83, s:70, g:74, b:76,
+    trend:'+7', greenLoan:0.8, npl:1.07, car:15.1, roe:12.8,
+    greenBond:680, carbonAcc:14,
+    metrics:{总资产:'10.1万亿', 绿色信贷占比:'10.2%', 不良贷款率:'1.07%', 资本充足率:'15.1%', ROE:'12.8%', 绿色债券承销:'全国前三', 赤道原则成员:'是', ESG主题基金代销:'120亿+'},
+    summary:`兴业银行是国内最早加入<span class="hl-green">赤道原则</span>的银行，绿色金融先发优势显著。环境维度83分在股份制银行中<span class="hl-green">名列首位</span>，绿色债券承销规模位居全国前三。近12月ESG动量<span class="hl-green">+7分，为股份制银行最强</span>。明晟A级评级，标普CSA评分55分。社会维度70分和治理维度74分<span class="hl-gold">与头部同行存在差距</span>，需关注员工多元化与薪酬结构优化。`,
+    radar:[85,83,74,76,70,68,76,74,72,70,74,76,70,73,75,72,70,74,68,75],
+    radarPeer:[66,65,67,63,65,66,68,65,62,64,67,68,63,65,68,65,62,63,60,66]
+  },
+  '浦发银行':{
+    full:'上海浦东发展银行股份有限公司', ticker:'600000.SS',
+    type:'joint', msci:'BBB', sp:46, sust:'27.5（中等风险）', pboc:'B+',
+    badgeClass:'bbb', e:65, s:62, g:63, b:60,
+    trend:'-2', greenLoan:0.55, npl:1.46, car:14.2, roe:8.5,
+    greenBond:320, carbonAcc:5,
+    metrics:{总资产:'8.9万亿', 绿色信贷占比:'6.2%', 不良贷款率:'1.46%', 资本充足率:'14.2%', ROE:'8.5%', 碳排放强度:'0.89tCO₂/百万元', ESG评级连续下调:'2次', 监管处罚次数:'3次（近2年）'},
+    summary:`浦发银行当前MSCI评级<span class="hl-gold">BBB</span>，近2年评级连续下调，ESG动量为<span class="hl-red">-2</span>，值得重点关注。不良贷款率1.46%<span class="hl-red">高于股份制银行均值</span>，资产质量压力较大。环境维度65分在绿色信贷转型上<span class="hl-red">落后于同业</span>，碳排放强度也相对偏高。近2年监管处罚3次，<span class="hl-red">合规风险需持续监控</span>。标普CSA评分46分和Sustainalytics中等风险评级共同指向ESG改进需求较为迫切。`,
+    radar:[66,65,63,60,62,60,64,62,60,62,63,65,60,62,64,62,58,60,56,62],
+    radarPeer:[66,65,67,63,65,66,68,65,62,64,67,68,63,65,68,65,62,63,60,66]
+  },
+  '中信银行':{
+    full:'中信银行股份有限公司', ticker:'601998.SS / 998.HK',
+    type:'joint', msci:'A', sp:53, sust:'21.8（低风险）', pboc:'A-',
+    badgeClass:'a', e:73, s:71, g:73, b:70,
+    trend:'+2', greenLoan:0.62, npl:1.18, car:14.8, roe:10.5,
+    greenBond:450, carbonAcc:8,
+    metrics:{总资产:'9.4万亿', 绿色信贷占比:'7.3%', 不良贷款率:'1.18%', 资本充足率:'14.8%', ROE:'10.5%', 绿色债券余额:'450亿', 数字化转型投入:'120亿/年', 科技金融贷款:'4,200亿'},
+    summary:`中信银行保持明晟<span class="hl-green">A级评级</span>，在科技金融与绿色金融双轮驱动下ESG动量<span class="hl-green">温和改善</span>。标普CSA评分53分位于股份制银行中游水平。环境、社会与治理三维度评分接近，均在70-73分区间，<span class="hl-gold">缺乏明显突破性优势，但整体均衡稳健</span>。科技金融贷款规模4200亿，<span class="hl-green">数字化转型投入力度强</span>。Sustainalytics低风险定级，整体ESG态势稳定。`,
+    radar:[74,73,73,70,71,70,73,71,70,70,73,74,69,71,73,70,68,70,66,71],
+    radarPeer:[66,65,67,63,65,66,68,65,62,64,67,68,63,65,68,65,62,63,60,66]
+  },
+  '光大银行':{
+    full:'中国光大银行股份有限公司', ticker:'601818.SS / 6818.HK',
+    type:'joint', msci:'BBB', sp:48, sust:'24.3（中等风险）', pboc:'B+',
+    badgeClass:'bbb', e:68, s:68, g:67, b:65,
+    trend:'+1', greenLoan:0.48, npl:1.25, car:13.9, roe:9.2,
+    greenBond:280, carbonAcc:6,
+    metrics:{总资产:'6.9万亿', 绿色信贷占比:'6.9%', 不良贷款率:'1.25%', 资本充足率:'13.9%', ROE:'9.2%', 光大ESG指数系列:'已发布4只', 可再生能源贷款增速:'31%', 女性员工占比:'55%'},
+    summary:`光大银行持MSCI <span class="hl-gold">BBB评级</span>，综合ESG表现处于股份制银行中等偏低水平。资本充足率13.9%<span class="hl-red">接近监管红线</span>，资本补充压力值得关注。环境、社会与治理三个维度评分均在67-68分区间，<span class="hl-gold">缺乏突出领域</span>。正面来看，光大银行已发布4只ESG主题指数，可再生能源贷款增速31%，<span class="hl-green">绿色转型意愿积极</span>。整体ESG动量+1，改善步伐尚需加快。`,
+    radar:[69,68,67,65,68,67,68,66,64,66,67,69,64,66,68,65,63,65,61,66],
+    radarPeer:[66,65,67,63,65,66,68,65,62,64,67,68,63,65,68,65,62,63,60,66]
+  },
+  '平安银行':{
+    full:'平安银行股份有限公司', ticker:'000001.SZ',
+    type:'joint', msci:'A', sp:54, sust:'23.5（低风险）', pboc:'A-',
+    badgeClass:'a', e:74, s:75, g:76, b:74,
+    trend:'+4', greenLoan:0.58, npl:1.06, car:14.1, roe:11.4,
+    greenBond:410, carbonAcc:10,
+    metrics:{总资产:'5.6万亿', 绿色信贷占比:'8.0%', 不良贷款率:'1.06%', 资本充足率:'14.1%', ROE:'11.4%', AI贷款决策占比:'72%', 零售客户数:'1.36亿', 科技人员占比:'32%'},
+    summary:`平安银行保持明晟<span class="hl-green">A级评级</span>，数字化转型与ESG深度融合是其最鲜明特色。AI驱动的贷款决策覆盖率达72%，<span class="hl-green">有效降低信用风险和运营碳足迹</span>。近12月ESG动量<span class="hl-green">+4分</span>，在股份制银行中属于较强改善区间。不良贷款率1.06%，资产质量<span class="hl-green">优于股份制银行均值</span>。治理维度76分，信息披露结构化程度高，<span class="hl-green">是数字化银行ESG实践的优秀范本</span>。`,
+    radar:[75,74,76,74,75,73,74,72,74,72,76,77,72,74,75,73,72,74,70,75],
+    radarPeer:[66,65,67,63,65,66,68,65,62,64,67,68,63,65,68,65,62,63,60,66]
+  }
+};
+
+const aliases = {
+  'icbc':'工商银行','601398':'工商银行','工行':'工商银行',
+  'ccb':'建设银行','601939':'建设银行','建行':'建设银行',
+  'abc':'农业银行','601288':'农业银行','农行':'农业银行',
+  'boc':'中国银行','601988':'中国银行',
+  'bocom':'交通银行','601328':'交通银行','交行':'交通银行',
+  'psbc':'邮储银行','601658':'邮储银行',
+  'cmb':'招商银行','600036':'招商银行','招行':'招商银行',
+  'cib':'兴业银行','601166':'兴业银行',
+  'spdb':'浦发银行','600000':'浦发银行',
+  'citic':'中信银行','601998':'中信银行',
+  'ceb':'光大银行','601818':'光大银行',
+  'pabank':'平安银行','000001':'平安银行'
+};
+
+const radarLabels=[
+  '气候风险管理','绿色信贷比率','碳排放强度','清洁能源融资',
+  '普惠金融覆盖','员工多样性','社区金融贡献','供应链ESG',
+  '董事会独立性','反洗钱合规','数据安全','反腐机制',
+  '薪酬透明度','信息披露质量','股东保护','监管合规',
+  '科技金融支持','跨境ESG布局','流动性管理','系统性风险控制'
+];
+
+// ===================================================
+// ② 实时时钟 + 数据模拟引擎
+// ===================================================
+function updateClock(){
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  const s=String(now.getSeconds()).padStart(2,'0');
+  const el=document.getElementById('clock-display');
+  if(el) el.textContent=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${h}:${m}:${s}`;
+}
+setInterval(updateClock,1000); updateClock();
+
+const tickerPrices={
+  icbc:5.42,ccb:6.81,abc:3.94,boc:4.27,bocom:6.33,
+  cmb:31.52,cib:14.87,spdb:7.45,citic:5.96,psbc:4.78
+};
+
+function jitter(v,pct=0.003){return+(v*(1+(Math.random()-.5)*pct*2)).toFixed(2);}
+
+function updateTickers(){
+  Object.keys(tickerPrices).forEach(id=>{
+    const prev=tickerPrices[id];
+    const next=jitter(prev);
+    tickerPrices[id]=next;
+    const pEl=document.getElementById('t-'+id);
+    const cEl=document.getElementById('tc-'+id);
+    if(!pEl||!cEl) return;
+    const diff=((next-prev)/prev*100).toFixed(2);
+    pEl.textContent=next.toFixed(2);
+    if(diff>=0){
+      cEl.textContent=`↑+${Math.abs(diff)}%`;
+      cEl.className='ticker-chg up';
+    } else {
+      cEl.textContent=`↓-${Math.abs(diff)}%`;
+      cEl.className='ticker-chg dn';
+    }
+  });
+  const now=new Date();
+  const el=document.getElementById('last-update');
+  if(el) el.textContent=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')} 更新`;
+}
+setInterval(updateTickers,4000);
+
+function simFluctuate(base,range=1.5){
+  return+(base+(Math.random()-.5)*range).toFixed(1);
+}
+function updateStatCards(){
+  const esg=document.getElementById('st-esgscore');
+  if(esg) esg.textContent=simFluctuate(71.3,0.4);
+}
+setInterval(updateStatCards,8000);
+
+// ===================================================
+// ③ 页签切换
+// ===================================================
+function showTab(id,el){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  const pane=document.getElementById('tab-'+id);
+  if(pane) pane.classList.add('active');
+  if(el) el.classList.add('active');
+  if(id==='compare') renderCompare();
+  if(id==='greenfinance') renderGreenFinance();
+  if(id==='risk') renderRisk();
+  if(id==='regulatory') renderRegulatory();
+  return false;
+}
+
+// ===================================================
+// ④ X光透视
+// ===================================================
+function loadCompany(name){ document.getElementById('search-input').value=name; generateReport(); }
+
+function generateReport(){
+  const raw=document.getElementById('search-input').value.trim().toLowerCase();
+  let key=aliases[raw]||Object.keys(BANKS).find(k=>
+    k.toLowerCase()===raw||
+    BANKS[k].full.toLowerCase().includes(raw)||
+    k.toLowerCase().includes(raw)
+  );
+  if(!key){
+    const inp=document.getElementById('search-input');
+    inp.style.borderColor='#dc2626';
+    inp.style.boxShadow='0 0 0 3px rgba(220,38,38,.15)';
+    setTimeout(()=>{inp.style.borderColor='';inp.style.boxShadow='';},2000);
+    return;
+  }
+  const d=BANKS[key];
+  const result=document.getElementById('xray-result');
+  result.style.display='none';
+  const badge=document.getElementById('score-badge');
+  badge.textContent=d.msci; badge.className=`score-badge ${d.badgeClass}`;
+  document.getElementById('company-name').textContent=d.full;
+  document.getElementById('company-ticker').textContent=d.ticker;
+  document.getElementById('rating-pills').innerHTML=`
+    <span class="rating-pill pill-msci">MSCI: ${d.msci}</span>
+    <span class="rating-pill pill-sp">标普: ${d.sp}</span>
+    <span class="rating-pill pill-sust">晨星: ${d.sust}</span>
+    <span class="rating-pill pill-pboc">人行: ${d.pboc}</span>
+  `;
+  ['e','s','g','b'].forEach(p=>{
+    document.getElementById(`${p}-score`).textContent=d[p];
+    setTimeout(()=>{document.getElementById(`${p}-bar`).style.width=d[p]+'%';},100);
+  });
+  document.getElementById('summary-text').innerHTML=d.summary;
+  // 银行核心指标
+  const metricsHtml=Object.entries(d.metrics).map(([k,v])=>`
+    <div class="metric-cell">
+      <div class="metric-cell-label">${k}</div>
+      <div class="metric-cell-value" style="color:var(--accent-blue);font-size:14px;">${v}</div>
+    </div>`).join('');
+  document.getElementById('bank-metrics').innerHTML=metricsHtml;
+  // 雷达图
+  if(window._radarInst) window._radarInst.destroy();
+  const rCtx=document.getElementById('radarChart').getContext('2d');
+  window._radarInst=new Chart(rCtx,{
+    type:'radar',
+    data:{
+      labels:radarLabels,
+      datasets:[
+        {label:key,data:d.radar,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.12)',borderWidth:2,pointBackgroundColor:'#3b82f6',pointRadius:3},
+        {label:'行业中位数',data:d.radarPeer,borderColor:'rgba(148,163,184,.45)',backgroundColor:'rgba(148,163,184,.04)',borderWidth:1.5,borderDash:[4,4],pointBackgroundColor:'#64748b',pointRadius:2}
+      ]
+    },
+    options:{
+      responsive:true,
+      scales:{r:{min:40,max:100,ticks:{stepSize:20,color:'#3d5a80',font:{size:9},backdropColor:'transparent'},grid:{color:'rgba(59,130,246,.1)'},angleLines:{color:'rgba(59,130,246,.07)'},pointLabels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:9.5}}}},
+      plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:12}}}
+    }
+  });
+  result.style.display='block';
+}
+
+// ===================================================
+// ⑤ 三级联动
+// ===================================================
+const l3Options={
+  climate:['温室气体排放（范围1/2）','气候风险压力测试','TCFD信息披露质量','碳中和路线图完整性'],
+  green:['绿色信贷余额','绿色信贷增速','绿色债券承销','碳账户开立量'],
+  human:['员工离职率','人均培训时长','薪酬公平指数','工作场所安全'],
+  inclusion:['普惠贷款余额','县域网点覆盖率','小微企业贷款比','数字普惠指数'],
+  governance:['董事会独立性','审计委员会质量','关联交易透明度','举报机制完善性'],
+  data:['数据泄露事件','网络安全投入占比','客户数据保护评分','AI伦理治理框架']
+};
+function updateL3(){
+  const v=document.getElementById('theme-select').value;
+  const sel=document.getElementById('indicator-select');
+  sel.innerHTML='';
+  if(!v||!l3Options[v]){sel.innerHTML='<option>请先选择主题</option>';return;}
+  l3Options[v].forEach(opt=>{const o=document.createElement('option');o.textContent=opt;sel.appendChild(o);});
+}
+
+let factorMode='abs', orderMode='desc';
+function setFactor(m){factorMode=m;document.getElementById('toggle-abs').classList.toggle('active',m==='abs');document.getElementById('toggle-trend').classList.toggle('active',m==='trend');}
+function setOrder(m){orderMode=m;document.getElementById('toggle-desc').classList.toggle('active',m==='desc');document.getElementById('toggle-asc').classList.toggle('active',m==='asc');}
+
+// ===================================================
+// ⑥ 筛选器
+// ===================================================
+const screenerData=Object.entries(BANKS).map(([k,v])=>({
+  name:k, full:v.full, type:v.type, score:Math.round((v.e+v.s+v.g+v.b)/4),
+  msci:v.msci, trend:v.trend, sp:v.sp, greenLoanPct:v.greenLoan, npl:v.npl
+}));
+
+function runScreener(){
+  const tbody=document.getElementById('screener-tbody');
+  let data=[...screenerData];
+  const btype=document.getElementById('bank-type-select').value;
+  if(btype) data=data.filter(d=>d.type===btype);
+  const regF=document.getElementById('reg-filter-select').value;
+  if(regF==='aaa') data=data.filter(d=>d.msci==='AAA');
+  else if(regF==='aa') data=data.filter(d=>['AAA','AA'].includes(d.msci));
+  else if(regF==='a') data=data.filter(d=>['AAA','AA','A'].includes(d.msci));
+  if(orderMode==='asc') data.sort((a,b)=>a.score-b.score);
+  else data.sort((a,b)=>b.score-a.score);
+  data=data.map((d,i)=>({...d,rank:i+1}));
+  tbody.innerHTML='';
+  data.forEach(row=>{
+    const tc=row.trend.startsWith('+')? 'trend-up':row.trend.startsWith('-')?'trend-down':'trend-flat';
+    const sc=row.score>=80?'high':row.score>=65?'med':'low';
+    const cls=orderMode==='asc'?'blacklist':(row.score>=65?'whitelist':'blacklist');
+    const ta=row.trend.startsWith('+')? '↑':row.trend.startsWith('-')?'↓':'→';
+    const typeLabel=row.type==='state'?'国有':'股份制';
+    tbody.innerHTML+=`
+      <tr>
+        <td style="font-family:'DM Mono',monospace;color:var(--text-muted);font-size:11px;">${String(row.rank).padStart(2,'0')}</td>
+        <td class="td-company">${row.name}<span class="td-ticker">${row.full.substring(0,14)}…</span></td>
+        <td><span class="rating-pill" style="background:rgba(6,182,212,.1);color:#67e8f9;border:1px solid rgba(6,182,212,.2);font-size:10.5px;">${typeLabel}</span></td>
+        <td><span class="score-num ${sc}">${row.score}</span></td>
+        <td><span class="rating-pill pill-msci">${row.msci}</span></td>
+        <td><span class="trend-badge ${tc}">${ta} ${row.trend}</span></td>
+        <td><span class="score-num ${sc}" style="font-size:12px;">${row.sp}</span></td>
+        <td><span style="font-family:'DM Mono',monospace;color:var(--green-mid);font-size:12px;">${row.greenLoanPct}万亿</span></td>
+        <td><span style="font-family:'DM Mono',monospace;color:${row.npl<1?'var(--green-mid)':row.npl<1.3?'#93c5fd':'var(--red-mid)'};font-size:12px;">${row.npl}%</span></td>
+        <td><span class="list-badge ${cls}">${cls==='whitelist'?'✓ 白名单':'✗ 黑名单'}</span></td>
+      </tr>`;
+  });
+}
+
+// ===================================================
+// ⑦ 绿色金融渲染
+// ===================================================
+const greenData=[
+  {name:'工商银行',loan:45000,pct:12.3,bond:2800,carbon:42,disclose:'A+'},
+  {name:'建设银行',loan:41000,pct:13.5,bond:2500,carbon:38,disclose:'A+'},
+  {name:'农业银行',loan:38000,pct:10.8,bond:1800,carbon:25,disclose:'A'},
+  {name:'中国银行',loan:32000,pct:11.4,bond:2200,carbon:20,disclose:'A'},
+  {name:'交通银行',loan:18000,pct:9.3,bond:950,carbon:12,disclose:'A-'},
+  {name:'邮储银行',loan:15000,pct:8.1,bond:620,carbon:15,disclose:'A-'},
+  {name:'招商银行',loan:12000,pct:8.8,bond:800,carbon:18,disclose:'A'},
+  {name:'兴业银行',loan:8000,pct:10.2,bond:680,carbon:14,disclose:'A'},
+];
+
+function renderGreenFinance(){
+  const body=document.getElementById('green-table-body');
+  if(!body) return;
+  body.innerHTML=greenData.map((r,i)=>`
+    <div class="compare-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;">
+      <span style="font-weight:600;">${r.name}</span>
+      <div class="compare-bar-wrap">
+        <div class="compare-bar-track"><div class="compare-bar-fill" style="width:${r.pct*5}%;background:linear-gradient(90deg,#16a34a,#4ade80);"></div></div>
+        <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--green-mid);min-width:36px;">${r.pct}%</span>
+      </div>
+      <span style="font-family:'DM Mono',monospace;font-size:12.5px;color:#fde68a;">${(r.bond/100).toFixed(0)}亿</span>
+      <span style="font-family:'DM Mono',monospace;font-size:12.5px;color:#67e8f9;">${r.carbon}万户</span>
+      <div class="compare-bar-wrap">
+        <div class="compare-bar-track"><div class="compare-bar-fill" style="width:${r.disclose==='A+'?100:r.disclose==='A'?80:65}%;background:linear-gradient(90deg,#3b82f6,#93c5fd);"></div></div>
+        <span style="font-size:11px;color:#93c5fd;min-width:24px;">${r.disclose}</span>
+      </div>
+      <span class="list-badge whitelist" style="font-size:10px;">${i<5?'✓ 重点':(i<7?'◎ 达标':'△ 跟踪')}</span>
+    </div>`).join('');
+  if(!window._gLoanChart){
+    const ctx=document.getElementById('greenLoanChart')?.getContext('2d');
+    if(ctx){
+      window._gLoanChart=new Chart(ctx,{type:'bar',data:{labels:greenData.map(d=>d.name),datasets:[{label:'绿色信贷余额（亿元）',data:greenData.map(d=>d.loan),backgroundColor:'rgba(22,163,74,.65)',borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(22,163,74,.3)',borderWidth:1,titleColor:'#86efac',bodyColor:'#f0f4ff',callbacks:{label:c=>' 余额：'+c.parsed.y.toLocaleString()+'亿元'}}},scales:{x:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11}}},y:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}}}}});
+    }
+  }
+  if(!window._gSectorChart){
+    const ctx2=document.getElementById('greenSectorChart')?.getContext('2d');
+    if(ctx2){
+      window._gSectorChart=new Chart(ctx2,{type:'doughnut',data:{labels:['清洁能源','绿色建筑','绿色交通','节能改造','水资源保护','其他绿色'],datasets:[{data:[32,24,18,12,8,6],backgroundColor:['rgba(22,163,74,.8)','rgba(59,130,246,.8)','rgba(6,182,212,.8)','rgba(212,168,71,.8)','rgba(124,58,237,.8)','rgba(148,163,184,.6)'],borderColor:'rgba(6,15,30,.5)',borderWidth:2}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:12}},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff'}}}});
+    }
+  }
+}
+
+// ===================================================
+// ⑧ 风险预警
+// ===================================================
+const risks=[
+  {level:'high',title:'浦发银行 — ESG评级连续下调风险',bank:'600000.SS · 股份制',desc:'近2年MSCI评级累计下调2级至BBB，不良贷款率1.46%创近5年新高，建议密切关注评级是否进一步下调。'},
+  {level:'high',title:'气候转型风险 — 高碳行业贷款集中度',bank:'全行业警示',desc:'部分银行对煤电、钢铁行业贷款集中度超过监管指导值，面临碳价上升导致信用风险暴露压力。'},
+  {level:'high',title:'数据安全合规风险',bank:'多家股份制银行',desc:'银保监会近期发布数据本地化新规，现有跨境数据架构需在12个月内完成整改，合规成本较高。'},
+  {level:'med',title:'光大银行 — 资本充足率压力',bank:'601818.SS · 股份制',desc:'资本充足率13.9%接近监管最低要求，在绿色信贷快速扩张背景下需要关注资本消耗与补充节奏。'},
+  {level:'med',title:'交通银行 — ESG动量改善迟缓',bank:'601328.SS · 国有',desc:'近12月ESG评分仅改善+1分，明显低于同类国有行均值+3.4分，需关注ESG战略执行效率。'},
+  {level:'med',title:'绿色债券信息披露不足',bank:'部分城商行',desc:'部分绿色债券募集资金使用未按季度披露，存在"洗绿"风险，监管部门已启动专项检查。'},
+  {level:'low',title:'工商银行 — 治理结构持续优化',bank:'601398.SS · 国有',desc:'董事会多元化计划推进中，目标2025年女性董事占比提升至35%，当前处于正向变革轨道。'},
+  {level:'low',title:'招商银行 — ESG数据质量高',bank:'600036.SS · 股份制',desc:'ESG数据已获普华永道独立鉴证，为A股银行中ESG信披质量最高机构之一，可作行业标杆参照。'},
+  {level:'low',title:'兴业银行 — 绿色债券市场领先',bank:'601166.SS · 股份制',desc:'绿色债券承销量居全国前三，赤道原则执行情况良好，绿色金融专业度持续领跑股份制银行。'},
+];
+
+function renderRisk(){
+  const c=document.getElementById('risk-grid-container');
+  if(!c||c.children.length>0) return;
+  c.innerHTML=risks.map(r=>`
+    <div class="risk-card ${r.level}">
+      <span class="risk-level ${r.level}">${r.level==='high'?'高风险':r.level==='med'?'中风险':'低风险/正面'}</span>
+      <div class="risk-title">${r.title}</div>
+      <div class="risk-desc">${r.desc}</div>
+      <div class="risk-bank">${r.bank}</div>
+    </div>`).join('');
+  // 风险热力图
+  const ctx=document.getElementById('riskHeatChart')?.getContext('2d');
+  if(ctx&&!window._riskHeat){
+    window._riskHeat=new Chart(ctx,{type:'bar',data:{labels:['环境（E）','社会（S）','治理（G）','合规风险','信用风险','流动性'],datasets:[{label:'国有行',data:[22,18,15,12,14,10],backgroundColor:'rgba(59,130,246,.7)',borderRadius:4},{label:'股份制',data:[38,28,32,42,35,28],backgroundColor:'rgba(220,38,38,.65)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:12}},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff'}},scales:{x:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11}}},y:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}},title:{display:true,text:'风险事件数量',color:'#4a6080',font:{size:11}}}}}});
+  }
+  const ctx2=document.getElementById('riskTimeChart')?.getContext('2d');
+  if(ctx2&&!window._riskTime){
+    window._riskTime=new Chart(ctx2,{type:'line',data:{labels:['9月','10月','11月','12月','1月','2月'],datasets:[{label:'高风险',data:[3,4,5,4,6,5],borderColor:'#dc2626',backgroundColor:'rgba(220,38,38,.1)',borderWidth:2,tension:.4,fill:true},{label:'中风险',data:[5,6,5,7,6,7],borderColor:'#d4a847',backgroundColor:'rgba(212,168,71,.08)',borderWidth:2,tension:.4,fill:true}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:12}},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff'}},scales:{x:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11}}},y:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}}}}});
+  }
+}
+
+// ===================================================
+// ⑨ 监管动态 — 权威数据库 + 官方来源链接
+// ===================================================
+const REG_DB = [
+  // 2025
+  {date:'2025-06',year:'2025',org:'人民银行 + 金融监管总局 + 证监会',pillar:'E',impact:'high',
+   title:'《绿色金融支持项目目录（2025年版）》',
+   desc:'三部委联合发布，以《绿色低碳转型产业指导目录（2024版）》为基础修订，新增储能、绿氢、CCUS等类别，自2025年10月1日起施行，全面替代2021年版绿色债券目录。',
+   url:'http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/5779612/index.html'},
+  {date:'2025-01',year:'2025',org:'上海证券交易所',pillar:'G',impact:'medium',
+   title:'《上海证券交易所上市公司自律监管指南第4号——可持续发展报告编制（2026年1月修订）》',
+   desc:'进一步细化2024年《可持续发展报告指引》执行细则，为上市银行编制ESG报告提供更具操作性的披露指南，含量化指标核算方法和格式模板。',
+   url:'https://www.sse.com.cn/lawandrules/guide/stock/zbxxpljg/ssgszljg/c/c_20250117_10770284.shtml'},
+  {date:'2025-01',year:'2025',org:'金融监管总局',pillar:'E',impact:'high',
+   title:'《银行业气候风险压力测试操作指引（试行）》',
+   desc:'要求资产规模万亿以上银行每年开展气候转型风险与物理风险双维度压力测试，并将结果纳入ICAAP资本充足率评估，推动气候风险管理纳入银行核心审慎框架。',
+   url:'https://www.nfra.gov.cn/cn/view/pages/ItemList.html?itemPId=915&itemId=4115'},
+  // 2024
+  {date:'2024-10',year:'2024',org:'人民银行 + 生态环境部 + 金融监管总局 + 证监会',pillar:'E',impact:'high',
+   title:'《关于发挥绿色金融作用 服务美丽中国建设的意见》',
+   desc:'四部委联合发布，从加大重点领域支持力度、提升绿色金融服务能力、丰富产品服务等19项举措推动绿色金融服务美丽中国建设，明确扩展碳减排支持工具覆盖范围。',
+   url:'https://www.gov.cn/zhengce/zhengceku/202410/content_6979595.htm'},
+  {date:'2024-08',year:'2024',org:'证监会 / 沪深北交易所',pillar:'G',impact:'high',
+   title:'《上市公司可持续发展报告指引（试行）》正式实施',
+   desc:'沪深北三大交易所于2024年4月12日正式发布，5月1日起施行。沪深300成分股银行须最晚2026年4月30日前强制披露2025年度ESG报告，涵盖双重重要性分析、气候影响量化及21个ESG议题。',
+   url:'https://www.sse.com.cn/lawandrules/sselawsrules/stocks/mainipo/c/c_20240412_5737862.shtml'},
+  {date:'2024-07',year:'2024',org:'金融监管总局',pillar:'S',impact:'medium',
+   title:'《银行业普惠金融高质量发展实施方案（2024-2026）》',
+   desc:'明确2026年底普惠型小微贷款余额年均增速须高于全部贷款增速5个百分点，新增农村数字金融服务覆盖率考核指标，强化银行社会责任履行。',
+   url:'https://www.nfra.gov.cn/cn/view/pages/ItemList.html?itemPId=915&itemId=4115'},
+  {date:'2024-03',year:'2024',org:'人民银行',pillar:'E',impact:'high',
+   title:'《碳减排支持工具延续及扩容公告》',
+   desc:'碳减排支持工具延续至2027年底，覆盖行业从清洁能源扩展至节能环保、碳汇等领域，利率维持1.75%。截至2024年6月末，工具余额5478亿元，累计支持发放碳减排贷款超1.1万亿元。',
+   url:'http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html'},
+  // 2023
+  {date:'2023-07',year:'2023',org:'人民银行',pillar:'E',impact:'medium',
+   title:'《绿色债券信用评级指导》',
+   desc:'将ESG因素对企业偿债能力的影响纳入信用评级过程，对绿色债券评级尽职调查、信息披露、利益冲突作出明确规范，防止"洗绿"行为。',
+   url:'http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html'},
+  {date:'2023-02',year:'2023',org:'金融监管总局',pillar:'E',impact:'high',
+   title:'《银行业保险业绿色金融指引》正式施行',
+   desc:'要求银行将ESG因素纳入授信全流程管理，建立绿色金融专营机构或绿色金融事业部，披露绿色金融评价结果，定期开展ESG风险识别与管理。',
+   url:'https://www.nfra.gov.cn/cn/view/pages/ItemList.html?itemPId=915&itemId=4115'},
+  // 2022
+  {date:'2022-06',year:'2022',org:'人民银行',pillar:'E',impact:'high',
+   title:'《金融机构环境信息披露指南》（JR/T 0227-2022）',
+   desc:'金融行业标准，统一规定银行环境信息披露内容、格式与方法，要求披露碳足迹及气候风险压力测试结果，参考TCFD框架设计。',
+   url:'http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html'},
+  {date:'2022-02',year:'2022',org:'国务院',pillar:'E',impact:'high',
+   title:'《"十四五"节能减排综合工作方案》',
+   desc:'明确2025年单位GDP能耗降低13.5%目标，要求金融机构加大对节能降耗项目信贷支持，建立绿色金融配套激励政策。',
+   url:'https://www.gov.cn/gongbao/content/2022/content_5677837.htm'},
+  // 2021
+  {date:'2021-11',year:'2021',org:'人民银行',pillar:'E',impact:'high',
+   title:'《碳减排支持工具》创设落地',
+   desc:'通过再贷款机制向商业银行提供低成本资金（1.75%），专项支持清洁能源、节能环保、碳减排技术三大领域贷款，是中国绿色货币政策的里程碑。',
+   url:'http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html'},
+  {date:'2021-09',year:'2021',org:'国务院',pillar:'E',impact:'high',
+   title:'《关于完整准确全面贯彻新发展理念做好碳达峰碳中和工作的意见》',
+   desc:'国家顶层设计文件，明确2030年碳达峰、2060年碳中和战略路径，要求金融系统构建支持绿色低碳发展的政策框架。',
+   url:'https://www.gov.cn/zhengce/2021-10/24/content_5644613.htm'},
+  {date:'2021-07',year:'2021',org:'人民银行',pillar:'E',impact:'high',
+   title:'《银行业金融机构绿色金融评价方案》正式施行',
+   desc:'将绿色信贷与绿色债券纳入MPA宏观审慎评估体系，评价结果影响差别准备金率、再贷款额度及存款保险费率，自2021年7月1日起正式实施。',
+   url:'https://www.gov.cn/zhengce/zhengceku/2021-06/11/content_5616962.htm'},
+  {date:'2021-04',year:'2021',org:'国务院',pillar:'E',impact:'high',
+   title:'《关于加快建立健全绿色低碳循环发展经济体系的指导意见》',
+   desc:'国务院最高层面确立绿色金融体系建设路线图，要求推动绿色信贷、绿色债券、绿色基金、绿色保险协同发展，建立完善绿色金融标准体系。',
+   url:'https://www.gov.cn/zhengce/content/2021-02/22/content_5588274.htm'},
+  // 2020
+  {date:'2020-10',year:'2020',org:'生态环境部等五部委',pillar:'E',impact:'medium',
+   title:'《关于促进应对气候变化投融资的指导意见》',
+   desc:'五部委联合发布，启动气候投融资试点城市建设，建立气候项目库，引导银行类金融机构参与气候融资，是推动气候金融与ESG融合的重要基础性文件。',
+   url:'https://www.mee.gov.cn/xxgk2018/xxgk/xxgk03/202010/t20201026_803792.html'},
+  {date:'2020-07',year:'2020',org:'人民银行 + 发改委 + 证监会',pillar:'E',impact:'medium',
+   title:'《绿色债券支持项目目录（2021年版）》（征求意见稿）',
+   desc:'删除"清洁煤炭"类别，与国际绿色债券标准接轨，统一绿色债券认定标准，强化绿色属性的环境效益量化要求，2021年正式发布实施。',
+   url:'http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html'},
+];
+
+const REG_ANALYSIS = [
+  {theme:'📈 气候信息披露趋严（2022–2025）',color:'var(--accent-blue)',
+   content:'从自愿披露到强制要求，从定性描述到定量核算，中国银行业气候信息披露标准持续与TCFD国际框架对齐。2025年起，万亿级银行须完成气候压力测试并公开披露结果，标志着气候风险正式纳入银行审慎监管核心。'},
+  {theme:'🌿 绿色信贷政策工具不断完善',color:'var(--green)',
+   content:'碳减排支持工具、绿色再贷款、绿色MPA考核三大政策工具协同发力，形成正向激励机制。2024年银行业绿色信贷余额突破31万亿元，政策引导效果显著。目录扩容与标准统一进一步消除绿色金融"洗绿"风险。'},
+  {theme:'🏛️ ESG监管框架从分散走向整合',color:'var(--gold)',
+   content:'人民银行、金融监管总局、证监会三大监管机构政策协调性明显加强，ESG评价结果与监管评级、再融资审核、差别准备金率相互打通，形成"政策-监管-市场"联动的综合治理体系。'},
+  {theme:'🔒 数据安全与治理合规并重',color:'var(--purple-mid)',
+   content:'2024年《金融数据安全管理办法》落地，数据本地化要求与ESG信息披露义务形成双重合规压力。银行需同步应对数据主权监管和气候透明度要求，治理（G）维度的合规成本显著上升。'},
+];
+
+function renderRegulatory(){
+  const orgF    = document.getElementById('reg-org-filter')?.value    || '';
+  const yearF   = document.getElementById('reg-year-filter')?.value   || '';
+  const pillarF = document.getElementById('reg-pillar-filter')?.value || '';
+  const impactF = document.getElementById('reg-impact-filter')?.value || '';
+
+  let data = REG_DB.filter(r =>
+    (!orgF    || r.org    === orgF)    &&
+    (!yearF   || r.year   === yearF)   &&
+    (!pillarF || r.pillar === pillarF) &&
+    (!impactF || r.impact === impactF)
+  );
+
+  const badge = document.getElementById('reg-count-badge');
+  if(badge) badge.textContent = `共 ${data.length} 条政策`;
+
+  const impactColor = i => i==='high'?'var(--red-mid)':i==='medium'?'var(--gold-light)':'var(--green-mid)';
+  const impactLabel = i => i==='high'?'重大':i==='medium'?'中度':'一般';
+  const tagCls      = t => t==='E'?'e':t==='S'?'s':t==='G'?'g':'';
+
+  const leftHtml = data.map(r=>`
+    <div class="reg-row">
+      <div class="reg-date">${r.date}</div>
+      <div class="reg-body">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:4px;">
+          <a href="${r.url}" target="_blank" rel="noopener" class="reg-title" style="flex:1;color:var(--text-primary);text-decoration:none;transition:color .2s;"
+             onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-primary)'">${r.title}
+            <svg style="display:inline;margin-left:4px;vertical-align:middle;opacity:.5;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </a>
+          <span style="font-size:10px;font-weight:700;color:${impactColor(r.impact)};white-space:nowrap;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);">${impactLabel(r.impact)}影响</span>
+        </div>
+        <div class="reg-source">发布机构：${r.org}</div>
+        <div style="font-size:12.5px;color:var(--text-muted);margin-top:5px;line-height:1.7;">${r.desc}</div>
+        <div class="reg-tags">
+          <span class="reg-tag ${tagCls(r.pillar)}">${r.pillar}</span>
+          <a href="${r.url}" target="_blank" rel="noopener" style="text-decoration:none;">
+            <span class="reg-tag" style="cursor:pointer;background:rgba(6,182,212,.08);color:#67e8f9;border-color:rgba(6,182,212,.2);">查看原文 ↗</span>
+          </a>
+        </div>
+      </div>
+    </div>`).join('') || '<div style="padding:30px;text-align:center;color:var(--text-muted);font-size:13px;">暂无符合筛选条件的政策记录</div>';
+
+  document.getElementById('reg-list-left').innerHTML = leftHtml;
+
+  // Right panel: analysis
+  document.getElementById('reg-list-right').innerHTML = REG_ANALYSIS.map(a=>`
+    <div style="margin-bottom:18px;padding:16px;background:rgba(59,130,246,.04);border-left:3px solid ${a.color};border-radius:0 10px 10px 0;">
+      <div style="font-weight:700;font-size:13.5px;margin-bottom:8px;color:var(--text-primary);">${a.theme}</div>
+      <div style="font-size:13px;line-height:1.85;color:var(--text-secondary);">${a.content}</div>
+    </div>`).join('');
+
+  // Timeline chart — draw once
+  if(!window._regTimeline){
+    const ctx = document.getElementById('regTimelineChart')?.getContext('2d');
+    if(ctx){
+      const byYear = ['2020','2021','2022','2023','2024','2025'];
+      const counts = byYear.map(y=>REG_DB.filter(r=>r.year===y).length);
+      const highC  = byYear.map(y=>REG_DB.filter(r=>r.year===y&&r.impact==='high').length);
+      window._regTimeline = new Chart(ctx,{
+        type:'bar',
+        data:{
+          labels: byYear.map(y=>y+'年'),
+          datasets:[
+            {label:'全部政策',data:counts,backgroundColor:'rgba(59,130,246,.35)',borderRadius:5},
+            {label:'重大影响',data:highC, backgroundColor:'rgba(220,38,38,.6)', borderRadius:5}
+          ]
+        },
+        options:{
+          responsive:true,
+          plugins:{
+            legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:12}},
+            tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,
+              titleColor:'#93c5fd',bodyColor:'#f0f4ff',
+              callbacks:{title:c=>c[0].label,label:c=>` ${c.dataset.label}：${c.parsed.y} 条`}}
+          },
+          scales:{
+            x:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'Noto Sans SC',size:12}}},
+            y:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}},
+               max:8, title:{display:true,text:'政策条数',color:'#3d5a80',font:{size:11}}}
+          }
+        }
+      });
+    }
+  }
+}
+
+// ===================================================
+// ⑩ 横向对比
+// ===================================================
+const stateBanks=['工商银行','建设银行','农业银行','中国银行','交通银行','邮储银行'];
+
+function renderCompare(){
+  const body=document.getElementById('compare-table-body');
+  if(!body||body.children.length>0) return;
+  stateBanks.forEach(name=>{
+    const d=BANKS[name];
+    const score=Math.round((d.e+d.s+d.g+d.b)/4);
+    const sc=score>=80?'high':score>=70?'med':'low';
+    body.innerHTML+=`
+      <div class="compare-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr 1fr 1fr 1fr;">
+        <span style="font-weight:600;padding-left:0;">${name}<span class="td-ticker">${d.ticker.split('/')[0].trim()}</span></span>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar-track"><div class="compare-bar-fill" style="width:${score}%;background:linear-gradient(90deg,#3b82f6,#93c5fd);"></div></div>
+          <span class="score-num ${sc}" style="min-width:28px;font-size:13px;">${score}</span>
+        </div>
+        <span class="rating-pill pill-msci">${d.msci}</span>
+        <span style="font-family:'DM Mono',monospace;color:var(--green-mid);font-size:12px;">${d.metrics['绿色信贷占比']||d.metrics['绿色信贷占比(估计)']||'—'}</span>
+        <span style="font-family:'DM Mono',monospace;color:${d.npl<1?'var(--green-mid)':d.npl<1.3?'#93c5fd':'var(--red-mid)'};font-size:12px;">${d.npl}%</span>
+        <span style="font-family:'DM Mono',monospace;color:#67e8f9;font-size:12px;">${d.car}%</span>
+        <span style="font-family:'DM Mono',monospace;color:var(--gold);font-size:12px;">${d.roe}%</span>
+      </div>`;
+  });
+  // 雷达对比图
+  if(!window._cmpRadar){
+    const ctx=document.getElementById('compareRadarChart')?.getContext('2d');
+    const colors=['#3b82f6','#16a34a','#d4a847','#06b6d4','#7c3aed','#f97316'];
+    const labels6=['气候风险','绿色信贷','治理质量','社会责任','普惠金融','数据安全'];
+    if(ctx){
+      window._cmpRadar=new Chart(ctx,{type:'radar',data:{
+        labels:labels6,
+        datasets:stateBanks.map((name,i)=>{
+          const d=BANKS[name];
+          return{label:name,data:[d.e,Math.round(d.greenLoan*10),d.g,d.s,d.b,d.g-5],borderColor:colors[i],backgroundColor:colors[i].replace(')',', .06)').replace('rgb','rgba'),borderWidth:1.8,pointBackgroundColor:colors[i],pointRadius:3};
+        })
+      },options:{responsive:true,scales:{r:{min:40,max:100,ticks:{stepSize:20,color:'#3d5a80',font:{size:8},backdropColor:'transparent'},grid:{color:'rgba(59,130,246,.08)'},angleLines:{color:'rgba(59,130,246,.06)'},pointLabels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:10}}}},plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:10.5},boxWidth:10}}}}});
+    }
+  }
+  // 散点图
+  if(!window._scatter){
+    const ctx2=document.getElementById('scatterChart')?.getContext('2d');
+    if(ctx2){
+      window._scatter=new Chart(ctx2,{type:'scatter',data:{datasets:stateBanks.map((name,i)=>{
+        const d=BANKS[name];
+        const score=Math.round((d.e+d.s+d.g+d.b)/4);
+        const colors=['#3b82f6','#16a34a','#d4a847','#06b6d4','#7c3aed','#f97316'];
+        return{label:name,data:[{x:d.greenLoan,y:score}],backgroundColor:colors[i],borderColor:colors[i],pointRadius:8,pointHoverRadius:11};
+      })},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:10}},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff',callbacks:{label:c=>`${c.dataset.label}  绿色信贷:${c.parsed.x}万亿  ESG:${c.parsed.y}分`}}},scales:{x:{title:{display:true,text:'绿色信贷余额（万亿元）',color:'#4a6080',font:{size:11}},grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}},y:{title:{display:true,text:'ESG综合评分',color:'#4a6080',font:{size:11}},grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}}}}});
+    }
+  }
+}
+
+// ===================================================
+// ⑪ 首页图表
+// ===================================================
+function initOverviewCharts(){
+  // 折线图
+  const lCtx=document.getElementById('lineChart')?.getContext('2d');
+  if(lCtx){
+    const grad=lCtx.createLinearGradient(0,0,0,180);
+    grad.addColorStop(0,'rgba(59,130,246,.3)');grad.addColorStop(1,'rgba(59,130,246,0)');
+    new Chart(lCtx,{type:'line',data:{labels:['3月','4月','5月','6月','7月','8月','9月','10月','11月','12月','1月','2月'],datasets:[{label:'六大行ESG均分',data:[68.2,68.8,69.1,68.5,69.8,70.1,70.4,70.9,71.3,71.0,71.5,71.8],borderColor:'#3b82f6',backgroundColor:grad,borderWidth:2.5,tension:.4,fill:true,pointBackgroundColor:'#3b82f6',pointRadius:3,pointHoverRadius:5},{label:'股份制银行均分',data:[61.5,62.1,62.4,61.8,62.9,63.2,63.6,64.0,64.3,64.1,64.6,64.9],borderColor:'#06b6d4',backgroundColor:'rgba(6,182,212,.05)',borderWidth:2,tension:.4,fill:false,pointBackgroundColor:'#06b6d4',pointRadius:3}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:12}},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff',callbacks:{title:c=>c[0].label+' ESG评分',label:c=>` ${c.dataset.label}：${c.parsed.y}`}}},scales:{x:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11}}},y:{min:58,max:75,grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}}}}});
+  }
+  // 分组柱状图
+  const bCtx=document.getElementById('barChart')?.getContext('2d');
+  const bigSix=['工商银行','建设银行','农业银行','中国银行','交通银行','邮储银行'];
+  if(bCtx){
+    new Chart(bCtx,{type:'bar',data:{labels:bigSix,datasets:[{label:'E-环境',data:bigSix.map(n=>BANKS[n].e),backgroundColor:'rgba(22,163,74,.7)',borderRadius:4},{label:'S-社会',data:bigSix.map(n=>BANKS[n].s),backgroundColor:'rgba(59,130,246,.7)',borderRadius:4},{label:'G-治理',data:bigSix.map(n=>BANKS[n].g),backgroundColor:'rgba(212,168,71,.7)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:12}},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff'}},scales:{x:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11}}},y:{min:50,max:100,grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}}}}});
+  }
+  // 绿色信贷甜甜圈
+  const dCtx=document.getElementById('doughnutChart')?.getContext('2d');
+  if(dCtx){
+    new Chart(dCtx,{type:'doughnut',data:{labels:['清洁能源','绿色建筑','绿色交通','节能改造','水资源','其他'],datasets:[{data:[32,24,18,12,8,6],backgroundColor:['rgba(22,163,74,.8)','rgba(59,130,246,.8)','rgba(6,182,212,.8)','rgba(212,168,71,.8)','rgba(124,58,237,.8)','rgba(148,163,184,.6)'],borderColor:'rgba(6,15,30,.4)',borderWidth:2}]},options:{responsive:true,cutout:'62%',plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Noto Sans SC',size:11},boxWidth:12}},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff',callbacks:{label:c=>`${c.label}：${c.parsed}%`}}}}});
+  }
+  // MSCI评级分布
+  const rCtx=document.getElementById('ratingChart')?.getContext('2d');
+  if(rCtx){
+    new Chart(rCtx,{type:'bar',data:{labels:['AAA','AA','A','BBB','BB及以下'],datasets:[{label:'银行数量',data:[3,5,8,7,5],backgroundColor:['rgba(22,163,74,.8)','rgba(59,130,246,.8)','rgba(6,182,212,.7)','rgba(212,168,71,.7)','rgba(220,38,38,.7)'],borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff',callbacks:{label:c=>` ${c.parsed.y} 家银行`}}},scales:{x:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:11}}},y:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}},max:12}}}});
+  }
+  // 动量图
+  const mCtx=document.getElementById('momentumChart')?.getContext('2d');
+  if(mCtx){
+    const mData=[
+      {name:'工商银行',val:5},{name:'建设银行',val:4},{name:'邮储银行',val:6},
+      {name:'招商银行',val:3},{name:'兴业银行',val:7},{name:'平安银行',val:4},
+      {name:'农业银行',val:3},{name:'中国银行',val:2},{name:'交通银行',val:1},
+      {name:'浦发银行',val:-2},{name:'光大银行',val:1},{name:'中信银行',val:2}
+    ].sort((a,b)=>b.val-a.val);
+    new Chart(mCtx,{type:'bar',data:{labels:mData.map(d=>d.name),datasets:[{label:'ESG评分变化',data:mData.map(d=>d.val),backgroundColor:mData.map(d=>d.val>=0?'rgba(22,163,74,.7)':'rgba(220,38,38,.65)'),borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(6,15,30,.95)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#93c5fd',bodyColor:'#f0f4ff',callbacks:{label:c=>`${c.parsed.y>=0?'+':''}${c.parsed.y} 分（近12月）`}}},scales:{x:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'Noto Sans SC',size:9.5},maxRotation:30}},y:{grid:{color:'rgba(59,130,246,.06)'},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}}}}});
+  }
+}
+
+// ===================================================
+// ⑫ 初始化
+// ===================================================
+window.addEventListener('DOMContentLoaded',()=>{
+  initOverviewCharts();
+  runScreener();
+  document.getElementById('search-input')?.addEventListener('keydown',e=>{if(e.key==='Enter') generateReport();});
+  // 初始加载X光透视时预渲染工商银行
+  setTimeout(()=>{
+    if(document.getElementById('tab-xray').classList.contains('active')) return;
+  },500);
+});
+</script>
+</body>
+</html>
